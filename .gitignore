@@ -19,7 +19,6 @@ encrypt.lock
 Debug.win32
 Release.win32
 debuglib
-src2.1.3/toluaAPI/luaapi.cpp
 cocos2d-x-2.1.5/cocos2dx/proj.linux/libcocos2dx.a
 cocos2d-x-2.1.5/scripting/lua/luajit/LuaJIT-2.0.1/src
 src2.1.3/pbc/libpbc.a
