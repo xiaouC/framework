@@ -1,0 +1,22 @@
+import os, platform
+
+if platform.system() == 'Windows':
+    env = Environment(
+        tools = ['mingw'],
+        ENV = os.environ,
+        LIBS = 'crtdll',
+    )
+    env.PrependENVPath('PATH', r'C:\mingw\bin')
+    env.PrependENVPath('LIB', r'C:\mingw\lib')
+else:
+    env = Environment(
+        CCFLAGS=['-Wall', '-g3', '-pg'],
+        CPPPATH=['../../cocos2dx/lua/lua'],
+    )
+
+if platform.system() == 'Windows':
+    env.Library('pbc', Glob('*.c'))
+    env.SharedLibrary('pbc', Glob('*.c'))
+else:
+    staticlib = env.Library('pbc', Glob('*.c'))
+    Return('staticlib')

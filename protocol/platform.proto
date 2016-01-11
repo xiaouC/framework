@@ -1,0 +1,48 @@
+package framework;
+option optimize_for = LITE_RUNTIME;
+
+enum SDKType {
+    SDK_YY = 0;                 // 云悦
+    SDK_IAPPPAY = 1;            // 爱贝支付
+    SDK_JODO = 2;               // 卓動支付
+    SDK_ITOOLS_IOS = 3;         // iTools
+    SDK_PP_IOS = 4;             // PP 助手
+    SDK_LJ = 5;                 // 棱镜
+    SDK_YY_IOS = 6;             // YY企业证书包
+    SDK_UC = 7;                 // UC
+    SDK_YYZC = 8;               //YY＋筑巢支付
+    SDK_YYZCLH = 9;             //YY＋筑巢支付LH
+    SDK_TB_IOS = 10;            // 同步推
+    SDK_KY_IOS = 11;            // 快用助手
+    SDK_XY_IOS = 12;            // XY助手
+    SDK_AS_IOS = 13;            // 爱思i4
+    SDK_APP_IOS = 14;           // App Store
+    SDK_IIAPPLE_IOS = 15;       // i苹果
+    SDK_YYLH = 16;              // 云悦LH
+
+    SDK_BAIDU   = 17;           // android百度
+    SDK_XIAOMI  = 18;           // android小米
+    SDK_C360    = 19;           // android 360
+    SDK_OPPO    = 20;           // android oppo
+    SDK_ANZHI   = 21;           // android anzhi
+    SDK_WDJ     = 22;           // android wdj
+    SDK_WANKA   = 23;           // android wanka
+
+    SDK_YYB     = 24;           // android YYB
+    SDK_HM_IOS   = 25;          // 海马
+    SDK_ZC_IOS   = 26;          // 筑巢企业包
+}
+
+message AndroidEditTextMessage {
+    required string content = 1;
+}
+
+message LJSDKInfo {
+    required string        userId = 1; //游戏区分用户的唯一标识userId，不为空，请用该字段来标示游戏的人物唯一性
+    required string channelUserID = 2; //渠道的userId，原样返回，不为空，勿使用该字段来标示游戏人物唯一，多个渠道可能存在重复可能
+    required string     channelID = 3; //渠道编码，不重复
+    required string  channelLabel = 4; //渠道标识，如豌豆荚会返回wandoujia，方便CP区分渠道（获取渠道标识请参考文档下的工具类）
+    required string      userName = 5; //渠道的userName，原样返回，可能为空，请做好兼容处理
+    required string         token = 6; //渠道的token，原样返回，可能为空，请做好兼容处理，长度不要限制
+    required string   productCode = 7; //产品code，不为空，用于表示产品的唯一
+}

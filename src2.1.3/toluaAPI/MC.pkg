@@ -1,0 +1,110 @@
+$#include "MC/AssetsManager.h"
+$#include "MC/MovieClip.h"
+$#include "MC/MCLoader.h"
+$#include "MC/BatchNodeMC.h"
+
+$using namespace cocos2d;
+
+class AssetsManager
+{
+    static AssetsManager* sharedAssetsManager();
+    bool Load();
+    bool fileExists( const char* url );
+    std::string getRealPath( const char* url );
+    unsigned char* getFileContent( const char* url, const char* pMode, unsigned long* iSize );
+    int getVersion();
+    int getConfigVersion();
+    std::string getVersionName();
+    bool supportAssetsUpgrade();
+    bool isLuaFileExist(const char *url);
+    void addSearchPath( const char* szPath );
+}
+
+class MovieClip: public CCNodeRGBA
+{
+    CCRect mcBoundingBox;
+    CCRect mcOriginBoundingBox;
+
+    static MovieClip* createWithName( const char *mcName, bool bAsync = false );
+
+    void play( int startFrame, int durationFrame, int loopCount = 0, bool reverse = false );
+    void start();
+    void pause();
+    void setAutoClear( bool reset );
+    bool getAutoClear();
+    void setFrameRate( int rate );
+    int  getFrameRate();
+    const framework::Symbol* getSymbolInfo();
+    bool RegisterPlayEndCallbackHandler( LUA_FUNCTION nLuaHandler );
+    bool getResetKeyframe();
+    bool setResetKeyframe( bool reset );
+
+	float getTimeLength( int nFrameRate = -1 );
+    int getFrameCount();
+}
+
+CCRect			getBoundingBox( CCNode* node, bool bOrigin = false );
+MovieClip*			toMovieClip( CCNode* node );
+TLModel*			toTLModel( CCNode* node );
+CCSprite*			toSprite( CCNode* node );
+CCLabelTTF*		toTTFText( CCNode* node );
+TLLabelRichTex*		toTLRichTex( CCNode* node );
+CCLabelBMFont*		toBMText( CCNode* node );
+CCLayerColor*		toRect( CCNode* node );
+MCFrame*			toFrame( CCNode* node );
+CCParticleSystem*	toParticle( CCNode* node );
+TLRenderNode *      toRenderNode(CCNode* node);
+
+class ClipNode : public CCNode
+{
+	static ClipNode* clipNode();
+	static ClipNode* clipNode( CCRect region );
+
+    CCRect getClipRegion();
+    void setClipRegion( CCRect region );
+    void removeClipRegion();
+};
+
+class MCFrame: public ClipNode
+{
+    CCRect mcBoundingBox;
+    CCRect mcOriginBoundingBox;
+
+    static MCFrame* createWithBox( CCRect rect );
+    bool initWithBox( CCRect rect );
+};
+
+class MCLoader : public CCObject
+{
+    static MCLoader* sharedMCLoader();
+    void loadIndexFile( const char* animIndexFile, const char* plistIndexFile );
+    const framework::Symbol* getSymbol( const char* animName );
+    CCSpriteFrame* loadSpriteFrame( const char* frameName );
+    CCSprite* loadSprite( const char* frameName );
+	CCSprite* loadSpriteAsync( const char* frameName );
+	CCSprite* loadSpriteAsyncCallback( const char* frameName, LUA_FUNCTION nCallbackHandler );
+    void loadTextureAsync( const char *path, LUA_FUNCTION scriptCallback );
+	CCTexture2D* loadTextureByFrame( const std::string& filePath );
+    CCTexture2D* loadTexture( const std::string& filepath );
+	std::string getTexturePath( const std::string& filepath );
+};
+
+class MainSceneRoleMC: public CCNode
+{
+    CCRect mcBoundingBox;
+    static MainSceneRoleMC* createWithName( const char* mcStandName, const char* mcWalkName, CCSpriteBatchNode* pkBatchNode );
+
+    void playStand();
+    void playWalk();
+
+    void setFrameRate( int nStandRate, int nWalkRate );
+    void setFlipX( bool bFlipX );
+    void setFlipY( bool bFlipY );
+
+    CCSprite* getRoleSprite();
+    void setRoleSpriteOffsetX( float offsetX );
+    float getRoleSpriteOffsetX();
+    void setRoleSpriteOffsetY( float offsetY );
+    float getRoleSpriteOffsetY();
+    void resetRoleSpritePosition( bool resetDisplaySpriteFrame = false );
+};

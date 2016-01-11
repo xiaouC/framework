@@ -1,0 +1,8 @@
+
+sources = [ './texEncrypt.cpp' ]
+
+SharedLibrary( 'texEncrypt', sources,
+         CPPPATH = [ '.' ],
+         CPPDEFINES = [ 'CC_UNDER_LINUX', 'LINUX' ],
+         CCFLAGS=['-g3'],
+)

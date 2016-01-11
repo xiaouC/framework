@@ -1,0 +1,31 @@
+$#include "MC/MCNode.h"
+$using namespace cocos2d;
+
+CCRect              getBoundingBox(CCNode* node);
+MovieClip*          toMovieClip(CCNode* node);
+TLModel*            toTLModel( CCNode* node );
+CCSprite*           toSprite(CCNode* node);
+CCLabelTTF*         toTTFText(CCNode* node);
+CCLabelTexFont*     toTTFRichText(CCNode* node);
+CCLabelBMFont*      toBMText(CCNode* node);
+CCLayerColor*       toRect(CCNode* node);
+MCFrame*            toFrame(CCNode* node);
+CCParticleSystem*   toParticle(CCNode* node);
+TLRenderNode *      toRenderNode(CCNode* node);
+
+class ClipNode : public CCNode
+{
+	static ClipNode* clipNode();
+	static ClipNode* clipNode(CCRect region);
+
+    CCRect getClipRegion();
+    void setClipRegion(CCRect region);
+    void removeClipRegion(void);
+};
+
+class MCFrame: public ClipNode
+{
+    static MCFrame* createWithBox(CCRect rect);
+    bool initWithBox(CCRect rect);
+    CCRect mcBoundingBox;
+};

@@ -1,0 +1,433 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="protocol\ProtocolMsg.vcxproj.filters" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{fc708791-9c27-4034-bccf-9a88cbf3fcf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MC">
+      <UniqueIdentifier>{5399faaa-1f41-4fdd-bca3-e4ad40f63c60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetMessage">
+      <UniqueIdentifier>{6e4c180e-35b4-4ddd-a10b-e3867f4d9f68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="particle">
+      <UniqueIdentifier>{4d094798-cae8-4039-9667-bbb5e88e3234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pbc">
+      <UniqueIdentifier>{a79314e6-8f72-40cf-b89d-13f037eec284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform">
+      <UniqueIdentifier>{26c6090c-b12e-4d28-9338-7cc99ed1b046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RichText">
+      <UniqueIdentifier>{0a717497-51e1-46da-832b-65e2a57bbc3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="toluaAPI">
+      <UniqueIdentifier>{d555a67a-4797-40e3-9c14-27318bc6e9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tween">
+      <UniqueIdentifier>{0c6fecff-888d-4fc7-837b-a4d3798c80d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{dd9a314b-25dc-4548-a1ae-93e484967a6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="particle\modifier">
+      <UniqueIdentifier>{e120166d-7471-4d76-ba05-2554e31b2e7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="particle\space">
+      <UniqueIdentifier>{faee9279-d9a2-4bf1-8c90-5ef6a6c342db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="particle\util">
+      <UniqueIdentifier>{a8b53446-cdde-4e6c-90da-dd9d1b80a63d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="protocol">
+      <UniqueIdentifier>{2f386f2a-db33-433b-9d0b-7d7ab618f488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="protocol\src">
+      <UniqueIdentifier>{496d223f-d4ff-417a-bf79-488ea2db674c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src2.1.3\AppDelegate.cpp" />
+    <ClCompile Include="src2.1.3\main.cpp" />
+    <ClCompile Include="src2.1.3\TLRunningScene.cpp" />
+    <ClCompile Include="src2.1.3\Common\CCActionExtend.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\Common\TLCommon.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\Common\TLModel.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\MC\AssetsManager.cpp">
+      <Filter>MC</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\MC\ClipNode.cpp">
+      <Filter>MC</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\MC\MCFrame.cpp">
+      <Filter>MC</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\MC\MCLoader.cpp">
+      <Filter>MC</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\MC\MovieClip.cpp">
+      <Filter>MC</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\NetMessage\HttpClient.cpp">
+      <Filter>NetMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\NetMessage\HttpDownloader.cpp">
+      <Filter>NetMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\NetMessage\NetMsg.cpp">
+      <Filter>NetMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\NetMessage\NetMsgProcess.cpp">
+      <Filter>NetMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\NetMessage\NetWorkThread.cpp">
+      <Filter>NetMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\UI\TLDropDragHelper.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\UI\TLMaskLayer.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\UI\TLTextField.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\UI\TLTextFieldDelegate.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\UI\TLWindow.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\UI\TLWindowManager.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\tween\TLTweenManager.cpp">
+      <Filter>tween</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\toluaAPI\bit.c">
+      <Filter>toluaAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\toluaAPI\lfs.c">
+      <Filter>toluaAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\toluaAPI\lua_cmsgpack.c">
+      <Filter>toluaAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\toluaAPI\luaapi.cpp">
+      <Filter>toluaAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\toluaAPI\pbc-lua.cpp">
+      <Filter>toluaAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\toluaAPI\struct.c">
+      <Filter>toluaAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\toluaAPI\utils.cpp">
+      <Filter>toluaAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\RichText\TLFontTex.cpp">
+      <Filter>RichText</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\RichText\TLLabelRichTex.cpp">
+      <Filter>RichText</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\RichText\TLRichTexVerbatim.cpp">
+      <Filter>RichText</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\platform\PlatformUtils.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\Generator.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\GeneratorBehaviour.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\GeneratorData.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\Particle.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\ParticleBehaviour.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\ParticleRender.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\ParticleSystem.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\ParticleSystemManager.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\Util.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\ValueList.cpp">
+      <Filter>particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\modifier\AirFriction.cpp">
+      <Filter>particle\modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\modifier\GenericForce.cpp">
+      <Filter>particle\modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\util\Stream.cpp">
+      <Filter>particle\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\util\UTF8.cpp">
+      <Filter>particle\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\space\CircleGeneratorSpace.cpp">
+      <Filter>particle\space</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\space\GeneratorSpace.cpp">
+      <Filter>particle\space</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\space\LineGeneratorSpace.cpp">
+      <Filter>particle\space</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\space\ParticleSpace.cpp">
+      <Filter>particle\space</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\space\PathGeneratorSpace.cpp">
+      <Filter>particle\space</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\space\PointGeneratorSpace.cpp">
+      <Filter>particle\space</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\particle\space\RectGeneratorSpace.cpp">
+      <Filter>particle\space</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\MC\BatchNodeMC.cpp">
+      <Filter>MC</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\platform\share.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\platform\SDKLoginUtilsForAndroid.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\platform\JodoUtils.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\UI\TLEditBox.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="protocol\src\anim.pb.cc">
+      <Filter>protocol\src</Filter>
+    </ClCompile>
+    <ClCompile Include="protocol\src\files.pb.cc">
+      <Filter>protocol\src</Filter>
+    </ClCompile>
+    <ClCompile Include="protocol\src\platform.pb.cc">
+      <Filter>protocol\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\platform\SDKCallback.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="src2.1.3\UI\TLRenderNode.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src2.1.3\AppDelegate.h" />
+    <ClInclude Include="src2.1.3\AppMacros.h" />
+    <ClInclude Include="src2.1.3\main.h" />
+    <ClInclude Include="src2.1.3\TLRunningScene.h" />
+    <ClInclude Include="src2.1.3\Common\CCActionExtend.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\Common\LuaApi.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\Common\TLCommon.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\Common\TLModel.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\MC\AssetsManager.h">
+      <Filter>MC</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\MC\ClipNode.h">
+      <Filter>MC</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\MC\MCFrame.h">
+      <Filter>MC</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\MC\MCLoader.h">
+      <Filter>MC</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\MC\MovieClip.h">
+      <Filter>MC</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\NetMessage\HttpClient.h">
+      <Filter>NetMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\NetMessage\HttpDownloader.h">
+      <Filter>NetMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\NetMessage\NetMsg.h">
+      <Filter>NetMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\NetMessage\NetMsgProcess.h">
+      <Filter>NetMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\NetMessage\NetWorkThread.h">
+      <Filter>NetMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLDropDragHelper.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLMaskLayer.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLTextField.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLTextFieldDelegate.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLWindow.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLWindowDefine.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLWindowInline.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLWindowManager.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\tween\interpolation.h">
+      <Filter>tween</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\tween\TLTweenManager.h">
+      <Filter>tween</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\RichText\TLFontTex.h">
+      <Filter>RichText</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\RichText\TLLabelRichTex.h">
+      <Filter>RichText</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\RichText\TLRichTexVerbatim.h">
+      <Filter>RichText</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\platform\PlatformUtils.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\platform\sdk.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\Generator.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\GeneratorBehaviour.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\GeneratorData.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\Particle.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\ParticleBehaviour.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\ParticleRender.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\ParticleSystem.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\ParticleSystemManager.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\Util.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\ValueList.h">
+      <Filter>particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\modifier\AirFriction.h">
+      <Filter>particle\modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\modifier\GenericForce.h">
+      <Filter>particle\modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\modifier\Modifier.h">
+      <Filter>particle\modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\util\Stream.h">
+      <Filter>particle\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\util\UTF8.h">
+      <Filter>particle\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\space\CircleGeneratorSpace.h">
+      <Filter>particle\space</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\space\GeneratorSpace.h">
+      <Filter>particle\space</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\space\LineGeneratorSpace.h">
+      <Filter>particle\space</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\space\ParticleSpace.h">
+      <Filter>particle\space</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\space\PathGeneratorSpace.h">
+      <Filter>particle\space</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\space\PointGeneratorSpace.h">
+      <Filter>particle\space</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\particle\space\RectGeneratorSpace.h">
+      <Filter>particle\space</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\MC\BatchNodeMC.h">
+      <Filter>MC</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\platform\share.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\platform\SDKLoginUtilsForAndroid.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\platform\JodoUtils.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLEditBox.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\src\anim.pb.h">
+      <Filter>protocol\src</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\src\files.pb.h">
+      <Filter>protocol\src</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol\src\platform.pb.h">
+      <Filter>protocol\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\platform\SDKCallback.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src2.1.3\UI\TLRenderNode.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

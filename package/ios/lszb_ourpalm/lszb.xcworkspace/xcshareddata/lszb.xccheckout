@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>3DCC4C5E-2E94-4A4E-89FA-AD4096B6F5E4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>lszb</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>335FF77FAB53BA667E86DA8A1E430D6722DF6021</key>
+		<string>ssh://192.168.0.252/lol/framework.git</string>
+		<key>6C59B11E452C7A4EF4D15F54AAB1E4AB190290B9</key>
+		<string>/Users/xiaou/Library/Caches/CocoaPods/GitHub/d1921423ebc94834524d508f9f841d7efe0de692</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>package/ios/lszb_ourpalm/lszb.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>335FF77FAB53BA667E86DA8A1E430D6722DF6021</key>
+		<string>../../../..</string>
+		<key>6C59B11E452C7A4EF4D15F54AAB1E4AB190290B9</key>
+		<string>../../../../package/ios/lszb_ourpalm/Pods/OpenUDID</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://192.168.0.252/lol/framework.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>335FF77FAB53BA667E86DA8A1E430D6722DF6021</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>335FF77FAB53BA667E86DA8A1E430D6722DF6021</string>
+			<key>IDESourceControlWCCName</key>
+			<string>framework</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>6C59B11E452C7A4EF4D15F54AAB1E4AB190290B9</string>
+			<key>IDESourceControlWCCName</key>
+			<string>OpenUDID</string>
+		</dict>
+	</array>
+</dict>
+</plist>

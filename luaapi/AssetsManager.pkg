@@ -1,0 +1,14 @@
+$#include "MC/AssetsManager.h"
+
+class AssetsManager
+{
+    //static const char* loadAssetFile(const char* path, const char* pMode, unsigned long *iSize);
+    static AssetsManager* SharedAssetsManager();
+    bool Load();
+    bool fileExists(const char* url);
+    std::string getRealPath(const char* url);
+    void* getFileContent(const char* url, const char* pMode, unsigned long* iSize);
+    int getVersion();
+    string getVersionName();
+    bool supportAssetsUpgrade();
+}

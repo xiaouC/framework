@@ -1,0 +1,13 @@
+$#include "NetMessage/NetMsg.h"
+
+class CNetMsg
+{
+	static CNetMsg* Parse( char* szRevcBuf, unsigned int nLength );
+
+	unsigned int GetMsgID() const;
+	unsigned int GetMsgCode() const;
+    void ParseContent(::google::protobuf::MessageLite* pMsg);
+	unsigned int GetContentLength();
+	void* GetContentData();
+    char* GetContentStr();
+};

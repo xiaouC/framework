@@ -1,0 +1,22 @@
+$#include "MC/RoleMC.h"
+
+class MainSceneRoleMC: public CCNode
+{
+    CCRect mcBoundingBox;
+    static MainSceneRoleMC* createWithName( const char* mcStandName, const char* mcWalkName, CCSpriteBatchNode* pkBatchNode );
+
+    void playStand();
+    void playWalk();
+
+    void setFrameRate( int nStandRate, int nWalkRate );
+    void setFlipX( bool bFlipX );
+    void setFlipY( bool bFlipY );
+
+    CCSprite* getRoleSprite();
+    void setRoleSpriteOffsetX( float offsetX );
+    float getRoleSpriteOffsetX();
+    void setRoleSpriteOffsetY( float offsetY );
+    float getRoleSpriteOffsetY();
+    void resetRoleSpritePosition( bool resetDisplaySpriteFrame = false );
+};
+

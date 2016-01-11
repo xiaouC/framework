@@ -1,0 +1,25 @@
+PODS:
+  - assets (1.00003)
+  - OP_TBPay_SDK (2.1.4)
+  - OpenUDID (HEAD based on 1.0.0)
+  - UMengAnalytics (2.2.1)
+
+DEPENDENCIES:
+  - assets (from `assets`)
+  - OP_TBPay_SDK (from `../OP_TBPay_SDK`)
+  - OpenUDID (HEAD)
+  - UMengAnalytics (~> 2.2.1)
+
+EXTERNAL SOURCES:
+  assets:
+    :path: assets
+  OP_TBPay_SDK:
+    :path: ../OP_TBPay_SDK
+
+SPEC CHECKSUMS:
+  assets: 88f09504ed7e02e3018efbed5df2deb05b6e7a9e
+  OP_TBPay_SDK: 968f36181f42596893bf33dde8a00113e40f5a76
+  OpenUDID: 04a7c560c47869bc5194820e3b529d4504cc0296
+  UMengAnalytics: ce494e736260640957348d00eb0f41aa02167662
+
+COCOAPODS: 0.32.1

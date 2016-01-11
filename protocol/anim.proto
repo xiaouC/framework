@@ -1,0 +1,100 @@
+package framework;
+option optimize_for = LITE_RUNTIME;
+
+message Rect {
+    required float x = 1;
+    required float y = 2;
+    required float w = 3;
+    required float h = 4;
+}
+message Point {
+    required float x = 1;
+    required float y = 2;
+}
+message Color {
+    required int32 r = 1;
+    required int32 g = 2;
+    required int32 b = 3;
+}
+message Element {
+    enum ElementType {
+        ND_MOVIECLIP    = 1;
+        ND_BITMAP       = 2;
+        ND_TTFTEXT      = 4;
+        ND_FRAME        = 7;
+        ND_RECT         = 8;
+        ND_BMTEXT       = 9;
+        ND_PARTICLE     = 11;
+    }
+    required ElementType type       = 1;
+    required Point  position        = 2;
+    required Rect   boundingBox     = 3;
+    optional string libName         = 4;
+    optional string instanceName    = 5;
+    optional float  rotation        = 6;
+    optional Point  anchorPoint     = 7;
+    optional Point  scaleValue      = 8;
+    optional int32  alpha           = 9 [default=255];
+    optional Color  color           = 10;
+    optional string text            = 11;
+    optional int32  fontSize        = 12 [default=12];
+    optional string fnt             = 13;
+    optional int32  alignment       = 14;
+	optional Point  skew			= 15;
+}
+message Keyframe {
+    required int32   startFrame     = 1;
+    optional bool    isMotion       = 5 [default=false];
+    repeated Element elements       = 3;
+    optional int32   duration       = 4 [default=1];
+	optional string  script		    = 6;
+}
+message Layer {
+    repeated Keyframe keyframes     = 1;
+    optional string name = 2;
+}
+message AnimationKeyframe {
+    required int32  startFrame     = 1;
+    optional bool   isMotion       = 2 [default=false];
+    required Point	position       = 3;
+    optional int32  duration       = 4 [default=1];
+	optional string script		   = 5;
+}
+message Animation {
+	repeated AnimationKeyframe keyframes     = 1;
+}
+message Symbol {
+    required string		name            = 1;
+    required Rect		boundingBox     = 2;
+    required int32		frameCount      = 3;
+    repeated Layer		layers          = 5;
+    repeated Animation  anis			= 9;
+    optional int32		frameRate		= 10;
+	optional float		pauseTime		= 11;
+}
+message Anim {
+    repeated Symbol symbols         = 1;
+}
+
+message AnimIndexItem {
+    required string name            = 1;
+    repeated string symbols         = 2;
+}
+message AnimIndex {
+    repeated AnimIndexItem anims    = 1;
+}
+
+message Frame {
+    required        string      name            = 1;
+    required        int32       x               = 2;
+    required        int32       y               = 3;
+    required        int32       w               = 4;
+    required        int32       h               = 5;
+    required        bool        rotated         = 6;
+    required        int32       filename        = 7;
+}
+
+message FrameList {
+    repeated        Frame       frames          = 1;
+    repeated        string      filenames       = 2;
+}

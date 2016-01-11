@@ -1,0 +1,14 @@
+$#include "UI/LuaCallFunc.h"
+$using namespace cocos2d;
+
+class LuaCallFunc : public CCActionInstant //<NSCopying>
+{
+	static LuaCallFunc * create(LUA_FUNCTION nHandler);
+}
+
+class LuaMoveToEx : public CCActionInterval
+{
+    virtual void resetWithDuration( float duration, const CCPoint& position, LUA_FUNCTION nMoveEndLuaHandle, LUA_FUNCTION nUpdateLuaHandle );
+
+    static LuaMoveToEx* actionWithDuration( float duration, const CCPoint& position, LUA_FUNCTION nMoveEndLuaHandle, LUA_FUNCTION nUpdateLuaHandle );
+};

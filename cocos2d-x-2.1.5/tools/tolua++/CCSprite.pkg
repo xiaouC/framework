@@ -1,0 +1,146 @@
+/*
+typedef enum {
+	//! Translate with it's parent
+	CC_HONOR_PARENT_TRANSFORM_TRANSLATE =  1 << 0,
+	//! Rotate with it's parent
+	CC_HONOR_PARENT_TRANSFORM_ROTATE	=  1 << 1,
+	//! Scale with it's parent
+	CC_HONOR_PARENT_TRANSFORM_SCALE		=  1 << 2,
+	//! Skew with it's parent
+	CC_HONOR_PARENT_TRANSFORM_SKEW		=  1 << 3,
+
+	//! All possible transformation enabled. Default value.
+	CC_HONOR_PARENT_TRANSFORM_ALL		=  CC_HONOR_PARENT_TRANSFORM_TRANSLATE | CC_HONOR_PARENT_TRANSFORM_ROTATE | CC_HONOR_PARENT_TRANSFORM_SCALE | CC_HONOR_PARENT_TRANSFORM_SKEW,
+
+} ccHonorParentTransform;
+*/
+class CCSprite : public CCNodeRGBA
+{
+	void setDirty(bool bDirty);
+	bool isDirty(void);
+
+	ccV3F_C4B_T2F_Quad getQuad(void);
+
+	CCRect getTextureRect(void);
+	//bool isUsesBatchNode(void);
+	bool isTextureRectRotated(void);
+
+	void setAtlasIndex(unsigned int uAtlasIndex);
+	unsigned int getAtlasIndex(void);
+	//void setUsesSpriteBatchNode(bool bUsesSpriteBatchNode);
+	void setTextureAtlas(CCTextureAtlas *pobTextureAtlas);
+	CCTextureAtlas* getTextureAtlas(void);
+	//void setSpriteBatchNode(CCSpriteBatchNode *pobSpriteBatchNode);
+	//CCSpriteBatchNode* getSpriteBatchNode(void);
+	//void setHonorParentTransform(ccHonorParentTransform eHonorParentTransform);
+	//ccHonorParentTransform getHonorParentTransform(void);
+	void setBlendFunc(ccBlendFunc blendFunc);
+	ccBlendFunc getBlendFunc(void);
+
+	CCPoint getOffsetPosition(void);
+
+	void ignoreAnchorPointForPosition(bool newValue);
+	void setFlipX(bool bFlipX);
+	void setFlipY(bool bFlipY);
+	bool isFlipX(void);
+	bool isFlipY(void);
+
+	void removeChild(CCNode* pChild, bool bCleanUp);
+	void removeAllChildrenWithCleanup(bool bCleanup);
+	void reorderChild(CCNode* pChild, int zOrder);
+	void addChild(CCNode* pChild);
+	void addChild(CCNode* pChild, int zOrder);
+	void addChild(CCNode* pChild, int zOrder, int tag);
+	void sortAllChildren();
+	//void setPosition(CCPoint pos);
+	void setRotation(float rotation);
+	void setSkewX(float sx);
+	void setSkewY(float sy);
+	void setScale(float fScale);
+	void setScaleX(float fScaleX);
+	void setScaleY(float fScaleY);
+	void setVertexZ(float fVertexZ);
+	void setAnchorPoint(const CCPoint & anchor);
+	void setVisible(bool bVisible);
+
+	void setOpacity(GLubyte opacity);
+	GLubyte getOpacity(void);
+
+	void setColor(ccColor3B color3);
+	ccColor3B getColor(void);
+	void setOpacityModifyRGB(bool bValue);
+	bool isOpacityModifyRGB(void);
+
+	void setTexture(CCTexture2D *texture);
+	CCTexture2D* getTexture(void);
+
+	void updateTransform(void);
+	//void useSelfRender(void);
+	void setTextureRect(CCRect rect);
+	void setTextureRect(CCRect rect, bool rotated, CCSize size);
+	void setVertexRect(CCRect rect);
+	//void useBatchNode(CCSpriteBatchNode *batchNode);
+	void setDisplayFrame(CCSpriteFrame *pNewFrame);
+	bool isFrameDisplayed(CCSpriteFrame *pFrame);
+	CCSpriteFrame* displayFrame(void);
+	void setBatchNode(CCSpriteBatchNode* pBatchNode);
+	CCSpriteBatchNode* getBatchNode();
+	void setDisplayFrameWithAnimationName(const char *animationName, int frameIndex);
+
+    void setVertexAlpha( GLubyte opacity );
+    void setTLVertexAlpha( GLubyte opacity, bool bUpdate = false );    // 默认的那个 setOpacity 会 updateColor，但不是我期望的
+    void setBLVertexAlpha( GLubyte opacity, bool bUpdate = false );    // 默认的那个 setOpacity 会 updateColor，但不是我期望的
+    void setBRVertexAlpha( GLubyte opacity, bool bUpdate = false );    // 默认的那个 setOpacity 会 updateColor，但不是我期望的
+    void setTRVertexAlpha( GLubyte opacity, bool bUpdate = false );    // 默认的那个 setOpacity 会 updateColor，但不是我期望的
+    void setVertexZValue( GLfloat z );
+
+    void setTLVertexColor( const ccColor3B& color );
+    void setBLVertexColor( const ccColor3B& color );
+    void setTRVertexColor( const ccColor3B& color );
+    void setBRVertexColor( const ccColor3B& color );
+
+    void setTLTextureCoords( GLfloat u, GLfloat v );
+    void setBLTextureCoords( GLfloat u, GLfloat v );
+    void setTRTextureCoords( GLfloat u, GLfloat v );
+    void setBRTextureCoords( GLfloat u, GLfloat v );
+
+    void setTexture2( CCTexture2D* var );
+    void setTexture2Coords( GLfloat ul, GLfloat vt, GLfloat ur, GLfloat vb );
+
+    void setColor2R( GLfloat r );
+    void setColor2G( GLfloat g );
+    void setColor2B( GLfloat b );
+    void setColor2A( GLfloat a );
+
+    void updateToBatchNode();
+
+    void setTextureWrap( GLuint wrapS, GLuint wrapT );
+
+	void setCustomUniforms1( float val );
+	void setCustomUniforms2( float val );
+	void setCustomUniforms3( float val );
+	void setCustomUniforms4( float val );
+	float getCustomUniforms1();
+	float getCustomUniforms2();
+	float getCustomUniforms3();
+	float getCustomUniforms4();
+	void setCustomUniforms( float r, float g, float b, float a );
+
+	void setCustomUniformsEx1( float val );
+	void setCustomUniformsEx2( float val );
+	void setCustomUniformsEx3( float val );
+	void setCustomUniformsEx4( float val );
+	float getCustomUniformsEx1();
+	float getCustomUniformsEx2();
+	float getCustomUniformsEx3();
+	float getCustomUniformsEx4();
+	void setCustomUniformsEx( float r, float g, float b, float a );
+
+	static CCSprite* createWithTexture(CCTexture2D *pTexture);
+	static CCSprite* createWithTexture(CCTexture2D *pTexture, CCRect rect);
+	static CCSprite* createWithSpriteFrame(CCSpriteFrame *pSpriteFrame);
+	static CCSprite* createWithSpriteFrameName(const char *pszSpriteFrameName);
+	static CCSprite* create(const char *pszFileName, CCRect rect);
+	static CCSprite* create(const char *pszFileName);
+	static CCSprite* create();
+};

@@ -1,0 +1,1 @@
+To open the sample project, use MS Visual Studio 2005 or later.

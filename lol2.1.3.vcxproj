@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="protocol\ProtocolMsg.vcxproj.filters" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="protocol\src\anim.pb.cc" />
+    <ClCompile Include="protocol\src\files.pb.cc" />
+    <ClCompile Include="protocol\src\platform.pb.cc" />
+    <ClCompile Include="src2.1.3\AppDelegate.cpp" />
+    <ClCompile Include="src2.1.3\Common\CCActionExtend.cpp" />
+    <ClCompile Include="src2.1.3\Common\TLCommon.cpp" />
+    <ClCompile Include="src2.1.3\Common\TLModel.cpp" />
+    <ClCompile Include="src2.1.3\main.cpp" />
+    <ClCompile Include="src2.1.3\MC\AssetsManager.cpp" />
+    <ClCompile Include="src2.1.3\MC\BatchNodeMC.cpp" />
+    <ClCompile Include="src2.1.3\MC\ClipNode.cpp" />
+    <ClCompile Include="src2.1.3\MC\MCFrame.cpp" />
+    <ClCompile Include="src2.1.3\MC\MCLoader.cpp" />
+    <ClCompile Include="src2.1.3\MC\MovieClip.cpp" />
+    <ClCompile Include="src2.1.3\NetMessage\HttpClient.cpp" />
+    <ClCompile Include="src2.1.3\NetMessage\HttpDownloader.cpp" />
+    <ClCompile Include="src2.1.3\NetMessage\NetMsg.cpp" />
+    <ClCompile Include="src2.1.3\NetMessage\NetMsgProcess.cpp" />
+    <ClCompile Include="src2.1.3\NetMessage\NetWorkThread.cpp" />
+    <ClCompile Include="src2.1.3\particle\Generator.cpp" />
+    <ClCompile Include="src2.1.3\particle\GeneratorBehaviour.cpp" />
+    <ClCompile Include="src2.1.3\particle\GeneratorData.cpp" />
+    <ClCompile Include="src2.1.3\particle\modifier\AirFriction.cpp" />
+    <ClCompile Include="src2.1.3\particle\modifier\GenericForce.cpp" />
+    <ClCompile Include="src2.1.3\particle\Particle.cpp" />
+    <ClCompile Include="src2.1.3\particle\ParticleBehaviour.cpp" />
+    <ClCompile Include="src2.1.3\particle\ParticleRender.cpp" />
+    <ClCompile Include="src2.1.3\particle\ParticleSystem.cpp" />
+    <ClCompile Include="src2.1.3\particle\ParticleSystemManager.cpp" />
+    <ClCompile Include="src2.1.3\particle\space\CircleGeneratorSpace.cpp" />
+    <ClCompile Include="src2.1.3\particle\space\GeneratorSpace.cpp" />
+    <ClCompile Include="src2.1.3\particle\space\LineGeneratorSpace.cpp" />
+    <ClCompile Include="src2.1.3\particle\space\ParticleSpace.cpp" />
+    <ClCompile Include="src2.1.3\particle\space\PathGeneratorSpace.cpp" />
+    <ClCompile Include="src2.1.3\particle\space\PointGeneratorSpace.cpp" />
+    <ClCompile Include="src2.1.3\particle\space\RectGeneratorSpace.cpp" />
+    <ClCompile Include="src2.1.3\particle\Util.cpp" />
+    <ClCompile Include="src2.1.3\particle\util\Stream.cpp" />
+    <ClCompile Include="src2.1.3\particle\util\UTF8.cpp" />
+    <ClCompile Include="src2.1.3\particle\ValueList.cpp" />
+    <ClCompile Include="src2.1.3\platform\JodoUtils.cpp" />
+    <ClCompile Include="src2.1.3\platform\PlatformUtils.cpp" />
+    <ClCompile Include="src2.1.3\platform\SDKCallback.cpp" />
+    <ClCompile Include="src2.1.3\platform\SDKLoginUtilsForAndroid.cpp" />
+    <ClCompile Include="src2.1.3\platform\share.cpp" />
+    <ClCompile Include="src2.1.3\RichText\TLFontTex.cpp" />
+    <ClCompile Include="src2.1.3\RichText\TLLabelRichTex.cpp" />
+    <ClCompile Include="src2.1.3\RichText\TLRichTexVerbatim.cpp" />
+    <ClCompile Include="src2.1.3\TLRunningScene.cpp" />
+    <ClCompile Include="src2.1.3\toluaAPI\bit.c" />
+    <ClCompile Include="src2.1.3\toluaAPI\lfs.c" />
+    <ClCompile Include="src2.1.3\toluaAPI\luaapi.cpp" />
+    <ClCompile Include="src2.1.3\toluaAPI\lua_cmsgpack.c" />
+    <ClCompile Include="src2.1.3\toluaAPI\pbc-lua.cpp" />
+    <ClCompile Include="src2.1.3\toluaAPI\struct.c" />
+    <ClCompile Include="src2.1.3\toluaAPI\utils.cpp" />
+    <ClCompile Include="src2.1.3\tween\TLTweenManager.cpp" />
+    <ClCompile Include="src2.1.3\UI\TLDropDragHelper.cpp" />
+    <ClCompile Include="src2.1.3\UI\TLEditBox.cpp" />
+    <ClCompile Include="src2.1.3\UI\TLMaskLayer.cpp" />
+    <ClCompile Include="src2.1.3\UI\TLRenderNode.cpp" />
+    <ClCompile Include="src2.1.3\UI\TLTextField.cpp" />
+    <ClCompile Include="src2.1.3\UI\TLTextFieldDelegate.cpp" />
+    <ClCompile Include="src2.1.3\UI\TLWindow.cpp" />
+    <ClCompile Include="src2.1.3\UI\TLWindowManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="protocol\src\anim.pb.h" />
+    <ClInclude Include="protocol\src\files.pb.h" />
+    <ClInclude Include="protocol\src\platform.pb.h" />
+    <ClInclude Include="src2.1.3\AppDelegate.h" />
+    <ClInclude Include="src2.1.3\AppMacros.h" />
+    <ClInclude Include="src2.1.3\Common\CCActionExtend.h" />
+    <ClInclude Include="src2.1.3\Common\LuaApi.h" />
+    <ClInclude Include="src2.1.3\Common\TLCommon.h" />
+    <ClInclude Include="src2.1.3\Common\TLModel.h" />
+    <ClInclude Include="src2.1.3\main.h" />
+    <ClInclude Include="src2.1.3\MC\AssetsManager.h" />
+    <ClInclude Include="src2.1.3\MC\BatchNodeMC.h" />
+    <ClInclude Include="src2.1.3\MC\ClipNode.h" />
+    <ClInclude Include="src2.1.3\MC\MCFrame.h" />
+    <ClInclude Include="src2.1.3\MC\MCLoader.h" />
+    <ClInclude Include="src2.1.3\MC\MovieClip.h" />
+    <ClInclude Include="src2.1.3\NetMessage\HttpClient.h" />
+    <ClInclude Include="src2.1.3\NetMessage\HttpDownloader.h" />
+    <ClInclude Include="src2.1.3\NetMessage\NetMsg.h" />
+    <ClInclude Include="src2.1.3\NetMessage\NetMsgProcess.h" />
+    <ClInclude Include="src2.1.3\NetMessage\NetWorkThread.h" />
+    <ClInclude Include="src2.1.3\particle\Generator.h" />
+    <ClInclude Include="src2.1.3\particle\GeneratorBehaviour.h" />
+    <ClInclude Include="src2.1.3\particle\GeneratorData.h" />
+    <ClInclude Include="src2.1.3\particle\modifier\AirFriction.h" />
+    <ClInclude Include="src2.1.3\particle\modifier\GenericForce.h" />
+    <ClInclude Include="src2.1.3\particle\modifier\Modifier.h" />
+    <ClInclude Include="src2.1.3\particle\Particle.h" />
+    <ClInclude Include="src2.1.3\particle\ParticleBehaviour.h" />
+    <ClInclude Include="src2.1.3\particle\ParticleRender.h" />
+    <ClInclude Include="src2.1.3\particle\ParticleSystem.h" />
+    <ClInclude Include="src2.1.3\particle\ParticleSystemManager.h" />
+    <ClInclude Include="src2.1.3\particle\space\CircleGeneratorSpace.h" />
+    <ClInclude Include="src2.1.3\particle\space\GeneratorSpace.h" />
+    <ClInclude Include="src2.1.3\particle\space\LineGeneratorSpace.h" />
+    <ClInclude Include="src2.1.3\particle\space\ParticleSpace.h" />
+    <ClInclude Include="src2.1.3\particle\space\PathGeneratorSpace.h" />
+    <ClInclude Include="src2.1.3\particle\space\PointGeneratorSpace.h" />
+    <ClInclude Include="src2.1.3\particle\space\RectGeneratorSpace.h" />
+    <ClInclude Include="src2.1.3\particle\Util.h" />
+    <ClInclude Include="src2.1.3\particle\util\Stream.h" />
+    <ClInclude Include="src2.1.3\particle\util\UTF8.h" />
+    <ClInclude Include="src2.1.3\particle\ValueList.h" />
+    <ClInclude Include="src2.1.3\platform\JodoUtils.h" />
+    <ClInclude Include="src2.1.3\platform\PlatformUtils.h" />
+    <ClInclude Include="src2.1.3\platform\sdk.h" />
+    <ClInclude Include="src2.1.3\platform\SDKCallback.h" />
+    <ClInclude Include="src2.1.3\platform\SDKLoginUtilsForAndroid.h" />
+    <ClInclude Include="src2.1.3\platform\share.h" />
+    <ClInclude Include="src2.1.3\RichText\TLFontTex.h" />
+    <ClInclude Include="src2.1.3\RichText\TLLabelRichTex.h" />
+    <ClInclude Include="src2.1.3\RichText\TLRichTexVerbatim.h" />
+    <ClInclude Include="src2.1.3\TLRunningScene.h" />
+    <ClInclude Include="src2.1.3\tween\interpolation.h" />
+    <ClInclude Include="src2.1.3\tween\TLTweenManager.h" />
+    <ClInclude Include="src2.1.3\UI\TLDropDragHelper.h" />
+    <ClInclude Include="src2.1.3\UI\TLEditBox.h" />
+    <ClInclude Include="src2.1.3\UI\TLMaskLayer.h" />
+    <ClInclude Include="src2.1.3\UI\TLRenderNode.h" />
+    <ClInclude Include="src2.1.3\UI\TLTextField.h" />
+    <ClInclude Include="src2.1.3\UI\TLTextFieldDelegate.h" />
+    <ClInclude Include="src2.1.3\UI\TLWindow.h" />
+    <ClInclude Include="src2.1.3\UI\TLWindowDefine.h" />
+    <ClInclude Include="src2.1.3\UI\TLWindowInline.h" />
+    <ClInclude Include="src2.1.3\UI\TLWindowManager.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1B365F1F-BF29-4720-B443-E455E46567C2}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Client</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <OutDir>$(SolutionDir)$(Configuration).win32\</OutDir>
+    <IntDir>$(Configuration).win32\</IntDir>
+    <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration).win32\</OutDir>
+    <IntDir>$(Configuration).win32\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;COCOS2D_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>cocos2d-x-2.1.5\cocos2dx\;cocos2d-x-2.1.5\cocos2dx\support;cocos2d-x-2.1.5\cocos2dx\include;cocos2d-x-2.1.5\cocos2dx\platform;cocos2d-x-2.1.5\cocos2dx\platform\win32;cocos2d-x-2.1.5\cocos2dx\platform\third_party\win32;cocos2d-x-2.1.5\cocos2dx\platform\third_party\win32\pthread;cocos2d-x-2.1.5\cocos2dx\platform\third_party\win32\OGLES;cocos2d-x-2.1.5\cocos2dx\kazmath\include;cocos2d-x-2.1.5\CocosDenshion\include;cocos2d-x-2.1.5\scripting\lua\cocos2dx_support;cocos2d-x-2.1.5\scripting\lua\xxtea;cocos2d-x-2.1.5\scripting\lua\lua;cocos2d-x-2.1.5\scripting\lua\tolua;cocos2d-x-2.1.5\external\chipmunk\include\;src2.1.3;protobuf-2.4.1\src;protocol\src;protocol\src\config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4819</DisableSpecificWarnings>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>.\$(Configuration).win32;.\debuglib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;libcocos2d.lib;libCocosDenshion.lib;liblua.lib;libprotobuf-lite.lib;pthreadVCE2.lib;libcurl_imp.lib;libpbc.a;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;COCOS2D_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>cocos2d-x-2.1.5\cocos2dx\;cocos2d-x-2.1.5\cocos2dx\support;cocos2d-x-2.1.5\cocos2dx\include;cocos2d-x-2.1.5\cocos2dx\platform;cocos2d-x-2.1.5\cocos2dx\platform\win32;cocos2d-x-2.1.5\cocos2dx\platform\third_party\win32;cocos2d-x-2.1.5\cocos2dx\platform\third_party\win32\pthread;cocos2d-x-2.1.5\cocos2dx\platform\third_party\win32\OGLES;cocos2d-x-2.1.5\cocos2dx\kazmath\include;cocos2d-x-2.1.5\CocosDenshion\include;cocos2d-x-2.1.5\scripting\lua\cocos2dx_support;cocos2d-x-2.1.5\scripting\lua\lua;cocos2d-x-2.1.5\scripting\lua\tolua;cocos2d-x-2.1.5\external\chipmunk\include\;src2.1.3;protobuf-2.4.1\src;.\protocol\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4819</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>.\$(Configuration).win32;.\releaselib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;libcocos2d.lib;libCocosDenshion.lib;libExtensions.lib;liblua.lib;lua51.lib;libprotobuf-lite.lib;pthreadVCE2.lib;libcurl_imp.lib;libpbc.a;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

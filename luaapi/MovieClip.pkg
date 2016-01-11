@@ -1,0 +1,27 @@
+$#include "MC/MovieClip.h"
+
+class MovieClip: public CCNode
+{
+    CCRect mcBoundingBox;
+    static MovieClip* createWithName(const char *mcName, bool bAsync = false, bool bPlay = false);
+    /**
+     * @startFrame      从哪一帧开始
+     * @durationFrame   播多少帧，-1表示不限制，0表示不播放动画
+     */
+    void play(int startFrame, int durationFrame, int loopCount=0, bool reverse=false);
+    // 恢复
+    void start();
+    // 暂停
+    void pause();
+    // 设置关键帧是否重建元素，默认true
+    void setAutoClear(bool reset);
+    bool getAutoClear();
+    // 设置播放帧速
+    void setFrameRate(int rate);
+    // 获取符号源信息
+    const poem::Symbol* getSymbolInfo();
+    bool RegisterPlayEndCallbackLua( LUA_FUNCTION nLuaHandle, int nUserData = -1 );
+    void setColor(const ccColor3B& color);
+    bool getResetKeyframe();
+    bool setResetKeyframe(bool reset);
+}

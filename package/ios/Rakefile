@@ -1,0 +1,624 @@
+require 'rubygems'
+require 'erb'
+require 'fileutils'
+require 'plist'
+# $:.unshift File.join(File.dirname(__FILE__))
+require './yunyue'
+
+# {{{ 封神小鲜肉
+namespace :fs do
+  desc "App Store"
+  task :app, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "app"
+      version "#{args[:version]}"
+
+      # optional
+      # code_sign_identity 'iPhone Developer: yun yue (9DQ4ELRZ3W)'
+      code_sign_identity
+      archive_dir "#{ENV['HOME']}/ios_package/fs/"
+      archive_name 'App_Store_%{name}_%{version}.ipa'
+
+      system( "rm #{proj_dir}/*.png" )
+      system( "cp ../../../fs_icon/ios/app/*.png #{proj_dir}/" )
+      system( "cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png" )
+      system( "cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png" )
+      system( "cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png" )
+      system( "cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png" )
+      system( "cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png" )
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'app'
+        info['YYPackageName'] = 'app'
+      end
+    end
+
+    system( "git checkout -- #{proj_dir}/*.png" )
+  end
+
+  desc "云悦官方"
+  task :yy, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+    proj_dir = 'ttxm_yy'
+
+    Yunyue.build do
+      workspace 'ttxm_yy/lszb.xcworkspace'
+      scheme 'lszb'
+      version "#{args[:version]}"
+
+      metadata do |info|
+        payload = {
+          'CFBundleIdentifier' => 'com.yunyuegame.fengshen.yyios',
+          'CFBundleDisplayName' => '神奇小精灵加强版',
+          'UIAppFonts' => [ 'fonts/YunYueFont.ttf' ],
+          'SdkType' => '6',    # SDK_YY_IOS
+        }
+        info.update(payload)
+        ENV['PLATFORM'] = 'yyios'
+        info['YYPackageName'] = 'yyios'
+      end
+
+      system("cp ../../../pokemon_icons/ios/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/fs/"
+      archive_name 'YYIOS筑巢_%{name}_%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "爱思助手"
+  task :as, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "as"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'as'
+        info['YYPackageName'] = 'as'
+        payload = {
+          'CFBundleDisplayName' => '神奇小精灵加强版',
+          'YYPackageName' => 'as',
+          'SDK_APP_ID' => '1644',
+          'SDK_APP_KEY' => '6b76cf555d2046328a7947d844357b19',
+        }
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => '', 'CFBundleURLSchemes' => ["As#{payload['SDK_APP_ID']}"]}]
+        info.update(payload)
+      end
+
+      system("cp ../../../pokemon_icons/ios/i4/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      # optional
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name '爱思助手_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "海马"
+  task :hm, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "hm"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'hm'
+        info['CFBundleDisplayName'] = '神奇小精灵加强版'
+        info['YYPackageName'] = 'hmios'
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => '', 'CFBundleURLSchemes' => ["ZHPAY-#{info['CFBundleIdentifier']}"]}]
+      end
+
+      system("cp ../../../pokemon_icons/ios/haima/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name '海马_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "i苹果"
+  task :iiapple, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "iiapple"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'iiapple'
+        info['CFBundleDisplayName'] = '神奇小精灵加强版'
+        info['YYPackageName'] = 'iiapple'
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => 'alipay', 'CFBundleURLSchemes' => [info['CFBundleIdentifier']]}]
+      end
+
+      system("cp ../../../pokemon_icons/ios/iiapple/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name 'i苹果_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "itools"
+  task :itools, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "itools"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'itools'
+        info['CFBundleDisplayName'] = '神奇小精灵加强版'
+        info['YYPackageName'] = 'itools'
+        info['SDK_APP_ID'] = 1663
+        info['SDK_APP_KEY'] = '73E06E772502ADED748C960447E7F532'
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => '', 'CFBundleURLSchemes' => [info['CFBundleIdentifier']]}]
+      end
+
+      system("cp ../../../pokemon_icons/ios/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name 'itools_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "快用助手"
+  task :ky, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "ky"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'ky'
+        info['CFBundleDisplayName'] = '神奇小精灵加强版'
+        info['YYPackageName'] = 'ky'
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => 'com.ky.xSDK.alipay', 'CFBundleURLSchemes' => [info['CFBundleIdentifier']]}]
+      end
+
+      system("cp ../../../pokemon_icons/ios/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name '快用助手_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "PP 助手"
+  task :pp, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "pp"
+      version "#{args[:version]}"
+
+      #code_sign_identity 'iPhone Developer: yun yue (9DQ4ELRZ3W)'
+      #code_sign_identity
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'pp'
+        info['CFBundleDisplayName'] = '神奇小精灵加强版'
+        info['YYPackageName'] = 'pp'
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => 'pp', 'CFBundleURLSchemes' => ["teiron#{info['SDK_APP_ID']}"]}]
+      end
+
+      system("cp ../../../pokemon_icons/ios/pp/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name 'PP助手_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "同步推"
+  task :tb, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "tb"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'tb'
+        info['CFBundleDisplayName'] = '神奇小精灵加强版'
+        info['YYPackageName'] = 'tb'
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => '', 'CFBundleURLSchemes' => [info['CFBundleIdentifier']]}]
+      end
+
+      system("cp ../../../pokemon_icons/ios/tongbutui/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name '同步推_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "XY助手"
+  task :xy, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "xy"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        info['CFBundleIdentifier'] = 'com.winnergame.pokemon.xy'
+        ENV['PLATFORM'] = 'xy'
+        info['CFBundleDisplayName'] = '神奇小精灵加强版'
+        info['YYPackageName'] = 'xy'
+        info['SDK_APP_ID'] = '100026172'
+        info['SDK_APP_KEY'] = 'StJ6GSl8G2KPBswAofXc0zP7SWLu6bCw'
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => '', 'CFBundleURLSchemes' => [info['CFBundleIdentifier']]}]
+      end
+
+      system("cp ../../../pokemon_icons/ios/xy/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name 'XY助手_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "多多"
+  task :duoduo, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "duoduo"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        info['CFBundleIdentifier'] = 'com.yunyuegame.fengshen.duoduo'
+        ENV['PLATFORM'] = 'duoduo'
+        info['CFBundleDisplayName'] = '神奇小精灵加强版'
+        info['YYPackageName'] = 'duoduo'
+        # info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => '', 'CFBundleURLSchemes' => [info['CFBundleIdentifier']]}]
+      end
+
+      system("cp ../../../pokemon_icons/ios/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name '多多_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "果盘"
+  task :xx, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../client'
+
+    proj_dir = 'nataku'
+
+    Yunyue.build do
+      # required
+      workspace "nataku/lszb.xcworkspace"
+      scheme "xx"
+      version "#{args[:version]}"
+
+      metadata do |info|
+        ENV['PLATFORM'] = 'xx'
+        info['YYPackageName'] = 'xx'
+        payload = {
+          'CFBundleDisplayName' => '神奇小精灵加强版',
+          'YYPackageName' => 'xx',
+          'SDK_APP_ID' => '102119',
+          # 'SDK_APP_KEY' => '2UJ7AU5ZDJGLZ40UHD3D908XC1QUDAMWCF3ADR8XWVP8IIC2M6BAIU88UOB2DRYO',
+          'SDK_CLIENT_SECRET' => 'JATAZY66TGRO8H43',
+        }
+        info['CFBundleURLTypes'] = [{'CFBundleTypeRole' => 'Editor', 'CFBundleURLName' => '', 'CFBundleURLSchemes' => ["#{info['CFBundleIdentifier']}"]}]
+        info.update(payload)
+      end
+
+      system("cp ../../../pokemon_icons/ios/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      # optional
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name 'xx果盘_%{name}_v%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+  desc "微蓝白包"
+  task :weilan, [:version] do |task, args|
+    ENV['ASSETS_DIR'] = '../../../win32_client'
+    proj_dir = 'ttxm_yy'
+
+    Yunyue.build do
+      workspace 'ttxm_yy/lszb.xcworkspace'
+      scheme 'lszb'
+      version "#{args[:version]}"
+
+      metadata do |info|
+        payload = {
+          'CFBundleIdentifier' => 'com.winnergame.pokemon.weilanios',
+          'CFBundleDisplayName' => '神奇小精灵加强版',
+          'UIAppFonts' => [ 'fonts/YunYueFont.ttf' ],
+          'SdkType' => '6',    # SDK_YY_IOS
+        }
+        info.update(payload)
+        ENV['PLATFORM'] = 'weilanios'
+        info['YYPackageName'] = 'weilanios'
+      end
+
+      system("cp ../../../pokemon_icons/ios/*.png #{proj_dir}/")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-568h@2x.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Landscape@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default-Portrait@2x~ipad.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default.png")
+      system("cp ../../../win32_client/images/launch.png #{proj_dir}/Default@2x.png")
+
+      archive_dir "#{ENV['HOME']}/ios_package/pokemon/"
+      archive_name 'YYIOS_%{name}_%{version}.ipa'
+    end
+
+    system("git checkout -- #{proj_dir}/*.png")
+  end
+
+end
+# }}}
+
+# {{{ nataku:new
+namespace :nataku do
+  desc "New target"
+  task :new, [:name] do |task, args|
+      workspace = Xcodeproj::Workspace.new_from_xcworkspace('nataku/lszb.xcworkspace')
+      schemes = workspace.schemes.keys.reject { |x| x == 'Pods' }
+      puts "\033[01;32mAvailable schemes\033[00m: #{schemes.inspect}"
+
+      name = nil
+      3.times do
+        print "\nSelect scheme to duplicate: "
+        $stdout.flush
+        name = $stdin.gets.chomp
+        break if schemes.include? name
+      end
+
+      proj_path = workspace.schemes[name]
+      proj = Xcodeproj::Project.open(proj_path)
+      native_target = proj.targets.find { |item| item.to_s == name }
+
+      # create target
+      target = proj.new_target(:application, args[:name], :ios, "5.0")
+      target.product_name = "#{native_target.product_name}_#{args[:name]}"
+
+      # create scheme
+      scheme = Xcodeproj::XCScheme.new
+      scheme.add_build_target(target)
+      scheme.set_launch_target(target)
+      scheme.save_as(proj_path, args[:name])
+
+      # copy build_configurations and Info.plist
+      resources = proj.main_group.groups.find { |x| x.to_s == 'Group' }.groups.find { |x| x.name == 'Resources' }
+
+      target.build_configurations.map do |item|
+        item.build_settings = Marshal.load(Marshal.dump(native_target.build_settings(item.name)))
+        src = File.absolute_path(item.build_settings['INFOPLIST_FILE'].gsub('$(SRCROOT)', File.dirname(proj_path)))
+        dst_name = "#{args[:name]}-Info.plist"
+        item.build_settings['INFOPLIST_FILE'] = "$(SRCROOT)/lszb/Resources/#{dst_name}"
+
+        dst = File.join(File.dirname(proj_path), "lszb/Resources/#{dst_name}")
+        resources.new_file("Resources/#{dst_name}") unless resources.files.find { |x| x.display_name == dst_name }
+        FileUtils.cp(src, dst) unless File.exist?(dst)
+
+        item.build_settings['OTHER_CFLAGS'].delete_if { |x| x.start_with?('-DYUNYUE_TARGET') }
+        item.build_settings['OTHER_CFLAGS'] << "-DYUNYUE_TARGET_#{args[:name].upcase}"
+      end
+
+      # native_target.build_phases.map { |x| puts x.class }
+      # copy build_phases
+      phases = native_target.build_phases.reject { |x| x.instance_of? Xcodeproj::Project::Object::PBXShellScriptBuildPhase }.collect(&:class)
+      supporting_files = proj.main_group.groups.find { |x| x.to_s == 'Group' }.groups.find { |x| x.name == 'Supporting Files' }
+      icons_group = supporting_files.new_group(args[:name])
+      assets_pattern = '{57,72,76,114,120,144,152}.png'
+      icons = Dir.glob("nataku/lszb/#{args[:name]}/#{assets_pattern}").collect do |item|
+        ref = icons_group.new_file(item.gsub('nataku/lszb/', ''))
+        ref.display_name
+      end
+
+      phases.each do |klass|
+        src = native_target.build_phases.find { |x| x.instance_of? klass }
+        dst = target.build_phases.find { |x| x.instance_of? klass }
+        unless dst
+          dst ||= proj.new(klass)
+          target.build_phases << dst
+        end
+        dst.files.map { |x| x.remove_from_project }
+
+        src.files.each do |f|
+          next if f.display_name.start_with?('SDKLoginUtilsForIOS+')
+          next if f.display_name =~ /libPods(.*).a/
+
+          file_ref = proj.new(Xcodeproj::Project::Object::PBXFileReference)
+          file_ref.name = f.file_ref.name
+          file_ref.path = f.file_ref.path
+          file_ref.source_tree = f.file_ref.source_tree
+          file_ref.last_known_file_type = f.file_ref.last_known_file_type
+          file_ref.fileEncoding = f.file_ref.fileEncoding
+          begin
+            file_ref.move(f.file_ref.parent)
+          rescue
+          end
+
+          build_file = proj.new(Xcodeproj::Project::Object::PBXBuildFile)
+          build_file.file_ref = f.file_ref
+          dst.files << build_file
+        end
+
+        # replace icons
+        if dst.instance_of? Xcodeproj::Project::Object::PBXResourcesBuildPhase
+          icons.each do |icon|
+            file_ref = dst.files.find { |x| x.display_name == icon.split(File::SEPARATOR).last}
+            file_ref.remove_from_project if file_ref
+          end
+
+          icons_group.files.each do |file_ref|
+            build_file = proj.new(Xcodeproj::Project::Object::PBXBuildFile)
+            build_file.file_ref = file_ref
+            dst.files << build_file
+          end
+        end
+      end
+
+      # create template and add to build_phases
+      classes = proj.main_group.groups.find { |x| x.to_s == 'Group' }.groups.find { |x| x.name == 'Classes' }
+      sources = target.build_phases.find { |x| x.instance_of? Xcodeproj::Project::Object::PBXSourcesBuildPhase }
+
+      context = binding
+      context.local_variable_set(:name, args[:name])
+
+      templates = %w(SDKLoginUtilsForIOS.h.erb SDKLoginUtilsForIOS.mm.erb)
+
+      templates.each do |tpl|
+        filename, ext = tpl[0..-5].split('.')
+        filename = "#{filename}+#{args[:name].upcase}.#{ext}"
+
+        File.open("nataku/lszb/#{filename}", 'w') do |f|
+          f.write(ERB.new(File.read(tpl)).result(context))
+          puts "\033[01;32mcreate\033[00m #{filename}"
+          file_ref = classes.new_file(filename)
+          if %w(c cc m mm cpp cxx).include? ext
+            build_file = proj.new(Xcodeproj::Project::Object::PBXBuildFile)
+            build_file.file_ref = file_ref
+            sources.files << build_file
+          end
+        end
+      end
+
+      proj.save
+
+      puts <<-EOF.gsub(/^ {8}/, '')
+
+        # Add this lines to Podfile
+
+        target :#{args[:name]} do
+          platform :ios, "5.0"
+          import_pods
+          # pod "podname"
+        end
+
+        # Add this lines to AppController.mm
+
+        #ifdef YUNYUE_TARGET_#{args[:name].upcase}
+        #import "SDKLoginUtilsForIOS+#{args[:name].upcase}.h"
+        #endif
+
+      EOF
+  end
+end
+# }}}
+
+# vim: set fdm=marker:

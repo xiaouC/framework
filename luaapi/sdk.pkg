@@ -1,0 +1,6 @@
+$#include "platform/sdk.h"
+
+void OpenPlatformLogin();
+void OpenPayInterface(char* szSerialNo, int money);
+void EnterPlatform();
+int GetSdkType();

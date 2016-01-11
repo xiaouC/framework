@@ -1,0 +1,91 @@
+PODS:
+  - AS_SDK (2.1.0)
+  - assets (1.00003)
+  - ChartboostSDK (5.1.3)
+  - iiappleSDK (1.2.9)
+  - ITOOLS_SDK (2.5.1)
+  - KY_SDK (2.2.3)
+  - lua (5.1.5)
+  - luajit (2.0.1)
+  - MBProgressHUD (0.9.1)
+  - OpenUDID (HEAD based on 1.0.0)
+  - PP_SDK_iOS (1.5.5)
+  - Reachability (3.1.1)
+  - SBJson (3.2)
+  - TalkingDataAppCpa (2.2.38)
+  - TB_SDK (4.1.0)
+  - XX_SDK (2.1.0)
+  - XY_SDK (2.1.0)
+  - ZHPaySDK (1.3.8)
+
+DEPENDENCIES:
+  - AS_SDK (from `../AS_SDK`)
+  - assets (from `assets`)
+  - ChartboostSDK (from `../ChartboostSDK`)
+  - iiappleSDK (from `../iiappleSDK`)
+  - ITOOLS_SDK (from `../ITOOLS_SDK`)
+  - KY_SDK (from `../KY_SDK`)
+  - lua (from `../../../cocos2d-x-2.1.5/scripting/lua/lua`)
+  - luajit (from `../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios`)
+  - MBProgressHUD (~> 0.8)
+  - OpenUDID (HEAD)
+  - PP_SDK_iOS (from `../PP_SDK_iOS`)
+  - Reachability (~> 3.1.1)
+  - SBJson (~> 3.2)
+  - TalkingDataAppCpa (from `../TalkingDataAppCpa`)
+  - TB_SDK (from `../TB_SDK`)
+  - XX_SDK (from `../XX_SDK`)
+  - XY_SDK (from `../XY_SDK`)
+  - ZHPaySDK (from `../ZHPaySDK`)
+
+EXTERNAL SOURCES:
+  AS_SDK:
+    :path: "../AS_SDK"
+  assets:
+    :path: assets
+  ChartboostSDK:
+    :path: "../ChartboostSDK"
+  iiappleSDK:
+    :path: "../iiappleSDK"
+  ITOOLS_SDK:
+    :path: "../ITOOLS_SDK"
+  KY_SDK:
+    :path: "../KY_SDK"
+  lua:
+    :path: "../../../cocos2d-x-2.1.5/scripting/lua/lua"
+  luajit:
+    :path: "../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios"
+  PP_SDK_iOS:
+    :path: "../PP_SDK_iOS"
+  TalkingDataAppCpa:
+    :path: "../TalkingDataAppCpa"
+  TB_SDK:
+    :path: "../TB_SDK"
+  XX_SDK:
+    :path: "../XX_SDK"
+  XY_SDK:
+    :path: "../XY_SDK"
+  ZHPaySDK:
+    :path: "../ZHPaySDK"
+
+SPEC CHECKSUMS:
+  AS_SDK: f224476507f243f9ef69e5de6204fcae96271fdf
+  assets: 02a4e59a78cbdf8ee6e9beab92124ccf983263b9
+  ChartboostSDK: 008da10dbe10f214022fddb93b2ca550ffc4ffe2
+  iiappleSDK: 2d48e4f5906291be97fa2edb86f2e24e413c6c92
+  ITOOLS_SDK: f6beeb4386d827cc2096d53a9bf0957e67a1e46e
+  KY_SDK: 0e3225d28b59277a35f63677bdc3cc5d2a73dd93
+  lua: 18d50f88542b7e226b14a36b205176c82f2a9d67
+  luajit: d33c4394a0df4edf6eb453ca6b78062f48836b19
+  MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
+  OpenUDID: e7cb6984c7304906ad20f3a36bf087b025896b6b
+  PP_SDK_iOS: dbbaef1c652bfd7623a845f9d3c5b5e95f9a589a
+  Reachability: dd9aa4fb6667b9f787690a74f53cb7634ce99893
+  SBJson: 9626892a7dc75ccaa2aad207ed4e4f73d6762846
+  TalkingDataAppCpa: 32aabf7d32034365d2eca0e3616ffc54a749b924
+  TB_SDK: f46aa0af97864cb5081b0d0972ec17c781349f71
+  XX_SDK: 3f63ae61756d4cc267f63292108070eddd31a599
+  XY_SDK: c09b419e874cba6d66ac33f58c15a0cdd6409138
+  ZHPaySDK: 3ffe7a0232af6a1aea062c53c79f9771e16ecb03
+
+COCOAPODS: 0.39.0

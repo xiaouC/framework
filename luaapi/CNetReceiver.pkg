@@ -1,0 +1,20 @@
+$#include "NetMessage/NetMsgProcess.h"
+
+$using namespace poem;
+
+class CNetReceiver
+{
+    static CNetReceiver* SharedNetReceiver();
+
+    // 设置错误消息处理函数
+	void SetMsgErrorDefaultFuncPtr( LUA_FUNCTION nLuaHandle );
+	void RegisterMsgErrorFuncPtr( int nMsgCode, LUA_FUNCTION nLuaHandle );
+
+    // 设置lua网络消息回调函数
+	void RegisterMsgProcessFuncPtr( unsigned int nMsgID, LUA_FUNCTION nLuaHandle, bool share=false );
+
+    // 给自己发送错误消息
+	void SetErrorMsgToSelf( unsigned int uiMsgCode );
+	void SendMsgToSelf( unsigned int msgID, const char* pszMsgData = NULL, int nLength = 0 );
+    void Reset();
+}

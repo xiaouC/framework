@@ -1,0 +1,18 @@
+# Uncomment this line to define a global platform for your project
+platform :ios, "5.0"
+
+pod 'OP_TBPay_SDK', :path => '../OP_TBPay_SDK'
+# pod 'SBJson', '~> 3.2'
+pod 'UMengAnalytics', '~> 2.2.1'
+pod 'OpenUDID', :head
+pod 'assets', :path => 'assets'
+
+# 掌趣 SDK 只支持 armv7
+post_install do |installer_representation|
+  installer_representation.project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['VALID_ARCHS'] = 'armv7'
+      config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
+    end
+  end
+end

@@ -1,0 +1,42 @@
+PODS:
+  - assets (1.00003)
+  - luajit (2.0.1)
+  - OpenUDID (HEAD based on 1.0.0)
+  - PP_SDK_iOS (1.4.4)
+  - Reachability (3.1.1)
+  - SBJson (3.2)
+  - UMengAnalytics (2.2.1)
+
+DEPENDENCIES:
+  - assets (from `assets`)
+  - luajit (from `../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios`)
+  - OpenUDID (HEAD)
+  - PP_SDK_iOS (from `git@192.168.0.252:ratazzi/PP_SDK_iOS.git`, tag `v1.4.4`)
+  - Reachability (~> 3.1.1)
+  - SBJson (~> 3.2)
+  - UMengAnalytics (~> 2.2.1)
+
+EXTERNAL SOURCES:
+  assets:
+    :path: assets
+  luajit:
+    :path: "../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios"
+  PP_SDK_iOS:
+    :git: git@192.168.0.252:ratazzi/PP_SDK_iOS.git
+    :tag: v1.4.4
+
+CHECKOUT OPTIONS:
+  PP_SDK_iOS:
+    :git: git@192.168.0.252:ratazzi/PP_SDK_iOS.git
+    :tag: v1.4.4
+
+SPEC CHECKSUMS:
+  assets: 02a4e59a78cbdf8ee6e9beab92124ccf983263b9
+  luajit: d33c4394a0df4edf6eb453ca6b78062f48836b19
+  OpenUDID: 5a23b7477755efc2d7871b57aa79ba3089c40b74
+  PP_SDK_iOS: 17f879e3efb89f4999076179ca8f1c2e34f4cc4f
+  Reachability: 8e9635e3cb4f98e7f825e51147f677ecc694d0e7
+  SBJson: 72d7da8a5bf6c236e87194abb10ac573a8bccbef
+  UMengAnalytics: d4154135487c209b23698841e55f0fbd536d383b
+
+COCOAPODS: 0.36.3

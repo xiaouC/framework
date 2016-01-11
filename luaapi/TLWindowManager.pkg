@@ -1,0 +1,40 @@
+$#include "toluaui/TLWindowManager.h"
+$#include "toluaui/TLDropDragHelper.h"
+$using namespace cocos2d;
+
+class TLWindowManager : public CCLayer
+{
+	static TLWindowManager* SharedTLWindowManager();
+	CCPoint GetCenterPoint();
+	void ReleaseAllWindow();
+	bool AddModuleWindow( TLWindow* pModuleWindow );
+	void HideAllModuleWindow();
+	void DestroyAllModuleWindow();
+	void RemoveModuleWindow( TLWindow* pWindow );
+	TLWindow* FindModuleWindow( const std::string& strWindowName );
+	TLWindow* FindModuleWindow( const CCPoint& point );
+    float getLastPointX();
+    float getLastPointY();
+    CCPoint getLastPoint();
+    void MoveToTop( TLWindow* pWindow);
+    void MoveToBottom( TLWindow* pWindow);
+    void StopEventBubble();
+    void SetIsPressScene( bool bIsPressScene );
+    void ShowUI( bool bShow );
+    
+    void SetModalWindow( TLWindow* pWindow, bool bModal );
+    void SetSystemWindow( TLWindow* pWindow = NULL );
+    
+    void SetIsLockScreen( bool bLockScreen );
+	bool GetIsLockScreen();
+	
+	int TweenTo(int easeId, CCNode* widget, int pro, float delay, float duration, float to, LUA_FUNCTION onStop);
+	int TweenFrom(int easeId, CCNode* widget, int pro, float delay, float duration, float from, LUA_FUNCTION onStop);
+	int TweenFromTo(int easeId, CCNode* widget, int pro, float delay, float duration, float from, float to, LUA_FUNCTION onStop);
+	void RemoveTween(int tweenId);
+}
+
+class TLDropDragHelper : public CCObject
+{
+	void AppendShow( CCNode* pNode );
+}

@@ -1,0 +1,22 @@
+$#include "MC/MCLoader.h"
+
+class MCLoader
+{
+    // 单件
+    static MCLoader* sharedMCLoader();
+    // 加载索引文件
+    void loadIndexFile(const char* animIndexFile, const char* plistIndexFile);
+    // 加载影片元件信息
+    const poem::Symbol* getSymbol(const char* animName);
+    // 加载frame
+    CCSpriteFrame* loadSpriteFrame(const char* frameName);
+    // 加载sprite
+    CCSprite* loadSprite(const char* frameName);
+    CCSprite* loadSpriteGray(const char* frameName);
+    CCSprite* loadSpriteAsync( const char* frameName );
+    void addImageAsync(const char *path, LUA_FUNCTION scriptCallback);
+//    void clearLoadedSpriteFiles();
+    CCTexture2D* loadAssetsTexture(string filepath);
+};
+
+string getAssetsTexturePath(string filepath);

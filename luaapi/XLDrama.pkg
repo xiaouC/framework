@@ -1,0 +1,11 @@
+$#include "Drama/XLDrama.h"
+
+class XLDrama : public CCLayer
+{
+	static XLDrama* sharedDrama();
+	static void purgeSharedDrama();
+	
+	void ShowDramaLua( const std::string& strFile, LUA_FUNCTION nLuaHandle, LUA_FUNCTION nCancelLuaHandle );
+	
+	void exitFight();
+}

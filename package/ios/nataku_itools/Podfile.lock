@@ -1,0 +1,39 @@
+PODS:
+  - assets (1.00003)
+  - HXAppPlatformKit (2.3.0)
+  - luajit (2.0.1)
+  - OpenUDID (HEAD based on 1.0.0)
+  - Reachability (3.1.1)
+  - UMengAnalytics (2.2.1)
+
+DEPENDENCIES:
+  - assets (from `assets`)
+  - HXAppPlatformKit (from `git@192.168.0.252:ratazzi/HXAppPlatformKit.git`, tag `v2.3.0`)
+  - luajit (from `../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios`)
+  - OpenUDID (HEAD)
+  - Reachability (~> 3.1.1)
+  - UMengAnalytics (~> 2.2.1)
+
+EXTERNAL SOURCES:
+  assets:
+    :path: assets
+  HXAppPlatformKit:
+    :git: git@192.168.0.252:ratazzi/HXAppPlatformKit.git
+    :tag: v2.3.0
+  luajit:
+    :path: "../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios"
+
+CHECKOUT OPTIONS:
+  HXAppPlatformKit:
+    :git: git@192.168.0.252:ratazzi/HXAppPlatformKit.git
+    :tag: v2.3.0
+
+SPEC CHECKSUMS:
+  assets: 02a4e59a78cbdf8ee6e9beab92124ccf983263b9
+  HXAppPlatformKit: 5e05916d6a74233b4d0abfb42a34590ec9332cc7
+  luajit: d33c4394a0df4edf6eb453ca6b78062f48836b19
+  OpenUDID: 5a23b7477755efc2d7871b57aa79ba3089c40b74
+  Reachability: 8e9635e3cb4f98e7f825e51147f677ecc694d0e7
+  UMengAnalytics: d4154135487c209b23698841e55f0fbd536d383b
+
+COCOAPODS: 0.36.3

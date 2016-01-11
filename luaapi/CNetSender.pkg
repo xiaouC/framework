@@ -1,0 +1,16 @@
+$#include "NetMessage/NetMsgProcess.h"
+
+$using namespace poem;
+
+class CNetSender
+{
+	static bool ConnectSession( const char* szIPAddr, unsigned int uiPort );
+	static CNetSender* SessionConnection();
+	static void CloseSession();
+
+	static bool ConnectWorld( const char* szIPAddr, unsigned int uiPort );
+	static CNetSender* WorldConnection();
+	static void CloseWorld();
+
+	void NewNetMsgAndSend( unsigned int msgID, const char* buffer=NULL, int size=0);
+}

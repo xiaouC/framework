@@ -1,0 +1,3 @@
+$#include "platform/SDKLoginUtilsForAndroid.h"
+
+void OpenPayWithAndroid(char *ID, char *name, char *orderID, char *goodsID, char *price, char *serverID, char *roleID, char *roleName, char *roleLevel);

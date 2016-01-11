@@ -1,0 +1,2275 @@
+diff --git a/.gitignore b/.gitignore
+index 52d0b48..4eb67f4 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -20,6 +20,7 @@ Thumbs.db
+ *.cache
+ *.ilk
+ *.log
++*.o
+ [Bb]in
+ [Dd]ebug*/
+ *.sbr
+diff --git a/CocosDenshion/proj.linux/Makefile b/CocosDenshion/proj.linux/Makefile
+index 6510a4b..0269d9a 100644
+--- a/CocosDenshion/proj.linux/Makefile
++++ b/CocosDenshion/proj.linux/Makefile
+@@ -27,6 +27,7 @@ endif
+     
+ endif
+ 
++DEBUG := 1
+ COCOS_ROOT = ../..
+ include $(COCOS_ROOT)/cocos2dx/proj.linux/cocos2dx.mk
+ 
+diff --git a/cocos2dx/base_nodes/CCNode.cpp b/cocos2dx/base_nodes/CCNode.cpp
+index 64ae039..1907e42 100644
+--- a/cocos2dx/base_nodes/CCNode.cpp
++++ b/cocos2dx/base_nodes/CCNode.cpp
+@@ -880,8 +880,21 @@ void CCNode::transform()
+     // Update Z vertex manually
+     transfrom4x4.mat[14] = m_fVertexZ;
+ 
+-    kmGLMultMatrix( &transfrom4x4 );
++    if( m_fSkewX || m_fSkewY )
++    {
++        float fScaleX = abs( cos( m_fSkewY * kmPI / 180 ) );
++        float fScaleY = abs( cos( m_fSkewX * kmPI / 180 ) );
+ 
++        kmMat4 m44,m44Scale;
++        kmMat4Scaling( &m44Scale, fScaleX, fScaleY, 1.0f );
++        kmMat4Multiply( &m44, &transfrom4x4, &m44Scale );
++
++        kmGLMultMatrix( &m44 );
++    }
++    else
++    {
++        kmGLMultMatrix( &transfrom4x4 );
++    }
+ 
+     // XXX: Expensive calls. Camera should be integrated into the cached affine matrix
+     if ( m_pCamera != NULL && !(m_pGrid != NULL && m_pGrid->isActive()) )
+@@ -1297,6 +1310,64 @@ void CCNode::removeAllComponents()
+     m_pComponentContainer->removeAll();
+ }
+ 
++CCNode* CCNode::getChildByName( const char* name )
++{
++	if( name==NULL || name[0] == '\0' )
++		return this;
++
++	// find first part
++	std::string str="";
++	const char* next=NULL;
++	next = strstr(name, ".");
++	unsigned len = 0;
++	if (next!=NULL) {
++		len = next-name;
++		next++;
++	}
++
++	CCArray* children = this->getChildren();
++	if (children==NULL)
++		return NULL;
++	for (unsigned i=0; i<children->count(); i++)
++	{
++		CCNode* node = (CCNode*) children->objectAtIndex(i);
++		std::string& strName = node->getInstanceName();
++		if (!strName.empty())
++		{
++
++			bool equal=false;
++			// compare
++			if (next==NULL)
++			{
++				equal = strName==name;
++			}
++			else
++			{
++				equal = strncmp(name, strName.c_str(), len)==0;
++			}
++
++			if (equal)
++			{
++				if (next!=NULL)
++				{
++					return node->getChildByName(next);
++				}
++				else
++				{
++					return node;
++				}
++			}
++		}
++	}
++	for (unsigned i=0; i<children->count(); i++)
++	{
++		CCNode* result = ((CCNode*) children->objectAtIndex(i))->getChildByName(name);
++		if (result!=NULL)
++			return result;
++	}
++	return NULL;
++}
++
+ // CCNodeRGBA
+ CCNodeRGBA::CCNodeRGBA()
+ : _displayedOpacity(255)
+diff --git a/cocos2dx/base_nodes/CCNode.h b/cocos2dx/base_nodes/CCNode.h
+index 775200a..f56ed64 100644
+--- a/cocos2dx/base_nodes/CCNode.h
++++ b/cocos2dx/base_nodes/CCNode.h
+@@ -1327,6 +1327,8 @@ public:
+     virtual void removeAllComponents();
+     /// @} end of component functions
+ 
++	virtual CCNode* getChildByName( const char* name );
++
+ private:
+     /// lazy allocs
+     void childrenAlloc(void);
+diff --git a/cocos2dx/cocoa/CCObject.cpp b/cocos2dx/cocoa/CCObject.cpp
+index dd74c69..f382717 100644
+--- a/cocos2dx/cocoa/CCObject.cpp
++++ b/cocos2dx/cocoa/CCObject.cpp
+@@ -41,6 +41,8 @@ CCObject::CCObject(void)
+ : m_nLuaID(0)
+ , m_uReference(1) // when the object is created, the reference count of it is 1
+ , m_uAutoReleaseCount(0)
++, m_nodeType(ND_UNKNOWN)
++, m_sInstanceName("")
+ {
+     static unsigned int uObjectCount = 0;
+ 
+diff --git a/cocos2dx/cocoa/CCObject.h b/cocos2dx/cocoa/CCObject.h
+index d792248..743dabf 100644
+--- a/cocos2dx/cocoa/CCObject.h
++++ b/cocos2dx/cocoa/CCObject.h
+@@ -33,6 +33,21 @@ THE SOFTWARE.
+ 
+ NS_CC_BEGIN
+ 
++// PATCH BEGIN
++enum NodeType {
++	ND_MOVIECLIP = 1,   // MovieClip
++	ND_BITMAP = 2,      // CCSprite
++	ND_TTFTEXT = 4,     // CCLabelTTF
++	ND_TTFRICHTEXT = 5, // CCLabelTexFont
++	ND_FRAME  = 7,      // MCFrame
++	ND_RECT   = 8,      // CCNode
++	ND_BMTEXT = 9,      // CCLabelBM
++	ND_PARTICLE = 11,   // CCParticleSystem
++	ND_MODEL = 12,      // TLModel
++	ND_UNKNOWN  = 999,  // other
++};
++// PATCH END
++
+ /**
+  * @addtogroup base_nodes
+  * @{
+@@ -78,6 +93,18 @@ public:
+     virtual void update(float dt) {CC_UNUSED_PARAM(dt);};
+     
+     friend class CCAutoreleasePool;
++public:
++	// PATCH BEGIN
++	NodeType getNodeType() { return m_nodeType; };
++	std::string& getInstanceName() { return m_sInstanceName; };
++	void setInstanceName(std::string &name) { m_sInstanceName = name; };
++	// PATCH END
++
++protected:
++	// PATCH BEGIN
++	NodeType m_nodeType;
++	std::string m_sInstanceName;
++	// PATCH END
+ };
+ 
+ 
+@@ -89,6 +116,7 @@ typedef void (CCObject::*SEL_CallFuncO)(CCObject*);
+ typedef void (CCObject::*SEL_MenuHandler)(CCObject*);
+ typedef void (CCObject::*SEL_EventHandler)(CCEvent*);
+ typedef int (CCObject::*SEL_Compare)(CCObject*);
++typedef void (CCObject::*SEL_CallFuncNI)(CCObject*, int, int);
+ 
+ #define schedule_selector(_SELECTOR) (SEL_SCHEDULE)(&_SELECTOR)
+ #define callfunc_selector(_SELECTOR) (SEL_CallFunc)(&_SELECTOR)
+@@ -98,6 +126,7 @@ typedef int (CCObject::*SEL_Compare)(CCObject*);
+ #define menu_selector(_SELECTOR) (SEL_MenuHandler)(&_SELECTOR)
+ #define event_selector(_SELECTOR) (SEL_EventHandler)(&_SELECTOR)
+ #define compare_selector(_SELECTOR) (SEL_Compare)(&_SELECTOR)
++#define callfuncNI_selector(_SELECTOR) (SEL_CallFuncNI)(&_SELECTOR)
+ 
+ // end of base_nodes group
+ /// @}
+diff --git a/cocos2dx/misc_nodes/CCClippingNode.cpp b/cocos2dx/misc_nodes/CCClippingNode.cpp
+index 74973e8..b0dfb7c 100644
+--- a/cocos2dx/misc_nodes/CCClippingNode.cpp
++++ b/cocos2dx/misc_nodes/CCClippingNode.cpp
+@@ -157,7 +157,7 @@ void CCClippingNode::visit()
+     // - or stencil node invisible:
+     if (!m_pStencil || !m_pStencil->isVisible())
+     {
+-        if (m_bInverted)
++        //if (m_bInverted)
+         {
+             // draw everything
+             CCNode::visit();
+@@ -252,7 +252,9 @@ void CCClippingNode::visit()
+     //     if not in inverted mode: set the current layer value to 0 in the stencil buffer
+     //     if in inverted mode: set the current layer value to 1 in the stencil buffer
+     glStencilFunc(GL_NEVER, mask_layer, mask_layer);
++    glClearStencil( !m_bInverted ? 0 : ~0 );
+     glStencilOp(!m_bInverted ? GL_ZERO : GL_REPLACE, GL_KEEP, GL_KEEP);
++    glClear( GL_STENCIL_BUFFER_BIT );
+     
+     // draw a fullscreen solid rectangle to clear the stencil buffer
+     //ccDrawSolidRect(CCPointZero, ccpFromSize([[CCDirector sharedDirector] winSize]), ccc4f(1, 1, 1, 1));
+diff --git a/cocos2dx/misc_nodes/CCClippingNode.h b/cocos2dx/misc_nodes/CCClippingNode.h
+index 03991fb..2f08715 100644
+--- a/cocos2dx/misc_nodes/CCClippingNode.h
++++ b/cocos2dx/misc_nodes/CCClippingNode.h
+@@ -94,7 +94,7 @@ public:
+     bool isInverted() const;
+     void setInverted(bool bInverted);
+     
+-private:
++protected:
+     CCClippingNode();
+ };
+ 
+diff --git a/cocos2dx/misc_nodes/CCRenderTexture.h b/cocos2dx/misc_nodes/CCRenderTexture.h
+index e00fe03..c77b48a 100644
+--- a/cocos2dx/misc_nodes/CCRenderTexture.h
++++ b/cocos2dx/misc_nodes/CCRenderTexture.h
+@@ -157,6 +157,8 @@ public:
+     bool isAutoDraw() const;
+     void setAutoDraw(bool bAutoDraw);
+ 
++    CCTexture2D* getTexture() const { return m_pTexture; }
++
+ private:
+     void beginWithClear(float r, float g, float b, float a, float depthValue, int stencilValue, GLbitfield flags);
+ 
+diff --git a/cocos2dx/platform/linux/CCFileUtilsLinux.cpp b/cocos2dx/platform/linux/CCFileUtilsLinux.cpp
+index fb055d1..c61679c 100644
+--- a/cocos2dx/platform/linux/CCFileUtilsLinux.cpp
++++ b/cocos2dx/platform/linux/CCFileUtilsLinux.cpp
+@@ -44,7 +44,8 @@ bool CCFileUtilsLinux::init()
+     fullpath[length] = '\0';
+     std::string appPath = fullpath;
+     m_strDefaultResRootPath = appPath.substr(0, appPath.find_last_of("/"));
+-    m_strDefaultResRootPath += "/../../../Resources/";
++    //m_strDefaultResRootPath += "/../../../Resources/";
++    m_strDefaultResRootPath += "/";
+ 
+     // Set writable path to $XDG_CONFIG_HOME or ~/.config/<app name>/ if $XDG_CONFIG_HOME not exists.
+     const char* xdg_config_path = getenv("XDG_CONFIG_HOME");
+diff --git a/cocos2dx/platform/linux/CCImage.cpp b/cocos2dx/platform/linux/CCImage.cpp
+index 6c59bf5..63fe835 100644
+--- a/cocos2dx/platform/linux/CCImage.cpp
++++ b/cocos2dx/platform/linux/CCImage.cpp
+@@ -159,6 +159,7 @@ public:
+ 				return false;
+ 			}
+ 
++            /*
+ 			if (isspace(unicode)) {
+ 				currentPaintPosition += face->glyph->metrics.horiAdvance >> 6;
+ 				prevGlyphIndex = glyphIndex;
+@@ -166,6 +167,7 @@ public:
+ 				lastBreakIndex = currentLine.glyphs.size();
+ 				continue;
+ 			}
++            */
+ 
+ 			LineBreakGlyph glyph;
+ 			glyph.glyphIndex = glyphIndex;
+diff --git a/cocos2dx/proj.linux/SConstruct b/cocos2dx/proj.linux/SConstruct
+new file mode 100644
+index 0000000..9b87d53
+--- /dev/null
++++ b/cocos2dx/proj.linux/SConstruct
+@@ -0,0 +1,153 @@
++thirdparty = './platform/third_party/linux'
++
++sources = \
++[ '../actions/CCAction.cpp'
++, '../actions/CCActionCamera.cpp'
++, '../actions/CCActionEase.cpp'
++, '../actions/CCActionGrid.cpp'
++, '../actions/CCActionGrid3D.cpp'
++, '../actions/CCActionInstant.cpp'
++, '../actions/CCActionInterval.cpp'
++, '../actions/CCActionManager.cpp'
++, '../actions/CCActionPageTurn3D.cpp'
++, '../actions/CCActionProgressTimer.cpp'
++, '../actions/CCActionTiledGrid.cpp'
++, '../actions/CCActionCatmullRom.cpp'
++, '../actions/CCActionTween.cpp'
++, '../base_nodes/CCAtlasNode.cpp'
++, '../base_nodes/CCNode.cpp'
++, '../cocoa/CCAffineTransform.cpp'
++, '../cocoa/CCAutoreleasePool.cpp'
++, '../cocoa/CCGeometry.cpp'
++, '../cocoa/CCNS.cpp'
++, '../cocoa/CCObject.cpp'
++, '../cocoa/CCSet.cpp'
++, '../cocoa/CCZone.cpp'
++, '../cocoa/CCArray.cpp'
++, '../cocoa/CCDictionary.cpp'
++, '../cocoa/CCString.cpp'
++, '../cocoa/CCDataVisitor.cpp'
++, '../draw_nodes/CCDrawingPrimitives.cpp'
++, '../draw_nodes/CCDrawNode.cpp'
++, '../effects/CCGrabber.cpp'
++, '../effects/CCGrid.cpp'
++, '../keypad_dispatcher/CCKeypadDelegate.cpp'
++, '../keypad_dispatcher/CCKeypadDispatcher.cpp'
++, '../label_nodes/CCLabelAtlas.cpp'
++, '../label_nodes/CCLabelBMFont.cpp'
++, '../label_nodes/CCLabelTTF.cpp'
++, '../layers_scenes_transitions_nodes/CCLayer.cpp'
++, '../layers_scenes_transitions_nodes/CCScene.cpp'
++, '../layers_scenes_transitions_nodes/CCTransition.cpp'
++, '../layers_scenes_transitions_nodes/CCTransitionPageTurn.cpp'
++, '../layers_scenes_transitions_nodes/CCTransitionProgress.cpp'
++, '../menu_nodes/CCMenu.cpp'
++, '../menu_nodes/CCMenuItem.cpp'
++, '../misc_nodes/CCMotionStreak.cpp'
++, '../misc_nodes/CCProgressTimer.cpp'
++, '../misc_nodes/CCClippingNode.cpp'
++, '../misc_nodes/CCRenderTexture.cpp'
++, '../particle_nodes/CCParticleExamples.cpp'
++, '../particle_nodes/CCParticleSystem.cpp'
++, '../particle_nodes/CCParticleSystemQuad.cpp'
++, '../particle_nodes/CCParticleBatchNode.cpp'
++, '../platform/CCSAXParser.cpp'
++, '../platform/CCThread.cpp'
++, '../platform/platform.cpp'
++, '../platform/CCImageCommonWebp.cpp'
++, '../platform/CCEGLViewProtocol.cpp'
++, '../platform/CCFileUtils.cpp'
++, '../platform/linux/CCStdC.cpp'
++, '../platform/linux/CCFileUtilsLinux.cpp'
++, '../platform/linux/CCCommon.cpp'
++, '../platform/linux/CCApplication.cpp'
++, '../platform/linux/CCEGLView.cpp'
++, '../platform/linux/CCImage.cpp'
++, '../platform/linux/CCDevice.cpp'
++, '../script_support/CCScriptSupport.cpp'
++, '../sprite_nodes/CCAnimation.cpp'
++, '../sprite_nodes/CCAnimationCache.cpp'
++, '../sprite_nodes/CCSprite.cpp'
++, '../sprite_nodes/CCSpriteBatchNode.cpp'
++, '../sprite_nodes/CCSpriteFrame.cpp'
++, '../sprite_nodes/CCSpriteFrameCache.cpp'
++, '../support/ccUTF8.cpp'
++, '../support/CCPointExtension.cpp'
++, '../support/CCProfiling.cpp'
++, '../support/user_default/CCUserDefault.cpp'
++, '../support/TransformUtils.cpp'
++, '../support/base64.cpp'
++, '../support/ccUtils.cpp'
++, '../support/CCVertex.cpp'
++, '../support/CCNotificationCenter.cpp'
++, '../support/image_support/TGAlib.cpp'
++, '../support/tinyxml2/tinyxml2.cpp'
++, '../support/zip_support/ZipUtils.cpp'
++, '../support/zip_support/ioapi.cpp'
++, '../support/zip_support/unzip.cpp'
++, '../support/data_support/ccCArray.cpp'
++, '../support/component/CCComponent.cpp'
++, '../support/component/CCComponentContainer.cpp'
++, '../text_input_node/CCIMEDispatcher.cpp'
++, '../text_input_node/CCTextFieldTTF.cpp'
++, '../textures/CCTexture2D.cpp'
++, '../textures/CCTextureAtlas.cpp'
++, '../textures/CCTextureCache.cpp'
++, '../textures/CCTextureETC.cpp'
++, '../textures/CCTexturePVR.cpp'
++, '../tilemap_parallax_nodes/CCParallaxNode.cpp'
++, '../tilemap_parallax_nodes/CCTMXLayer.cpp'
++, '../tilemap_parallax_nodes/CCTMXObjectGroup.cpp'
++, '../tilemap_parallax_nodes/CCTMXTiledMap.cpp'
++, '../tilemap_parallax_nodes/CCTMXXMLParser.cpp'
++, '../tilemap_parallax_nodes/CCTileMapAtlas.cpp'
++, '../touch_dispatcher/CCTouchDispatcher.cpp'
++, '../touch_dispatcher/CCTouchHandler.cpp'
++, '../touch_dispatcher/CCTouch.cpp'
++, '../shaders/CCGLProgram.cpp'
++, '../shaders/ccGLStateCache.cpp'
++, '../shaders/CCShaderCache.cpp'
++, '../shaders/ccShaders.cpp'
++, '../kazmath/src/aabb.c'
++, '../kazmath/src/plane.c'
++, '../kazmath/src/vec2.c'
++, '../kazmath/src/mat3.c'
++, '../kazmath/src/quaternion.c'
++, '../kazmath/src/vec3.c'
++, '../kazmath/src/mat4.c'
++, '../kazmath/src/ray2.c'
++, '../kazmath/src/vec4.c'
++, '../kazmath/src/neon_matrix_impl.c'
++, '../kazmath/src/utility.c'
++, '../kazmath/src/GL/mat4stack.c'
++, '../kazmath/src/GL/matrix.c'
++, '../CCCamera.cpp'
++, '../CCConfiguration.cpp'
++, '../CCDirector.cpp'
++, '../CCScheduler.cpp'
++, '../ccFPSImages.c'
++, '../cocos2d.cpp'
++]
++
++Library('cocos2dx', sources,
++         CPPPATH = ['..', '../include', '../platform/linux', '../kazmath/include', '../platform/third_party/linux/libwebp',
++            '../platform/third_party/linux/libfreetype2',
++            '../platform/third_party/linux/libpng',
++            '../platform/third_party/linux/libtiff/include',
++			'../../extensions',
++			'../../extensions/CCBReader',
++			'../../extensions/GUI/CCControlExtension',
++			'../../extensions/GUI/CCControlExtension',
++			'../../external/chipmunk/include/chipmunk',
++			'../../extensions/network'],
++         #CPPPATH = [ '.', 'include', 'platform'
++         #          , thirdparty+'/libpng'
++         #          , thirdparty+'/libfreetype2'
++         #          , thirdparty+'/libjpeg'
++         #          , thirdparty+'/libxml2'
++         #          #, thirdparty+'/OGLES'
++         #          ],
++         #CPPDEFINES = [('COCOS2D_DEBUG', 2)],
++         CPPDEFINES = ['CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL', ('COCOS2D_DEBUG', 1), 'CC_UNDER_LINUX', 'LINUX', 'RENDER_WITH_OPEN_GL', 'USE_FONTCONFIG'],
++         CCFLAGS=['-g3'],
++)
+diff --git a/cocos2dx/shaders/CCGLProgram.cpp b/cocos2dx/shaders/CCGLProgram.cpp
+index 85c11e5..4f937fc 100644
+--- a/cocos2dx/shaders/CCGLProgram.cpp
++++ b/cocos2dx/shaders/CCGLProgram.cpp
+@@ -79,6 +79,14 @@ CCGLProgram::~CCGLProgram()
+     }
+ }
+ 
++CCGLProgram* CCGLProgram::create()
++{
++	CCGLProgram* p = new CCGLProgram();
++	p->autorelease();
++
++	return p;
++}
++
+ bool CCGLProgram::initWithVertexShaderByteArray(const GLchar* vShaderByteArray, const GLchar* fShaderByteArray)
+ {
+     m_uProgram = glCreateProgram();
+@@ -215,6 +223,8 @@ void CCGLProgram::updateUniforms()
+ 
+     m_uUniforms[kCCUniformSampler] = glGetUniformLocation(m_uProgram, kCCUniformSampler_s);
+ 
++	m_uUniforms[kCCUniformCustom] = glGetUniformLocation(m_uProgram, kCCUniformCustom_f);
++
+     this->use();
+     
+     // Since sample most probably won't change, set it to 0 now.
+@@ -530,6 +540,8 @@ void CCGLProgram::setUniformsForBuiltins()
+     {
+         setUniformLocationWith4f(m_uUniforms[kCCUniformRandom01], CCRANDOM_0_1(), CCRANDOM_0_1(), CCRANDOM_0_1(), CCRANDOM_0_1());
+ 	}
++
++	setUniformLocationWith4f( m_uUniforms[kCCUniformCustom], m_fCustomUniforms[0], m_fCustomUniforms[1], m_fCustomUniforms[2], m_fCustomUniforms[3] );
+ }
+ 
+ void CCGLProgram::reset()
+diff --git a/cocos2dx/shaders/CCGLProgram.h b/cocos2dx/shaders/CCGLProgram.h
+index b83f66c..88f596c 100644
+--- a/cocos2dx/shaders/CCGLProgram.h
++++ b/cocos2dx/shaders/CCGLProgram.h
+@@ -57,6 +57,7 @@ enum {
+ 	kCCUniformCosTime,
+ 	kCCUniformRandom01,
+ 	kCCUniformSampler,
++	kCCUniformCustom,
+     
+ 	kCCUniform_MAX,
+ };
+@@ -80,6 +81,7 @@ enum {
+ #define kCCUniformRandom01_s			"CC_Random01"
+ #define kCCUniformSampler_s				"CC_Texture0"
+ #define kCCUniformAlphaTestValue		"CC_alpha_value"
++#define kCCUniformCustom_f				"CC_Custom"
+ 
+ // Attribute names
+ #define    kCCAttributeNameColor           "a_color"
+@@ -102,6 +104,9 @@ class CC_DLL CCGLProgram : public CCObject
+ public:
+     CCGLProgram();
+     virtual ~CCGLProgram();
++
++	static CCGLProgram* create();
++
+     /** Initializes the CCGLProgram with a vertex and fragment with bytes array */
+     bool initWithVertexShaderByteArray(const GLchar* vShaderByteArray, const GLchar* fShaderByteArray);
+     /** Initializes the CCGLProgram with a vertex and fragment with contents of filenames */
+@@ -188,6 +193,14 @@ public:
+     
+     inline const GLuint getProgram() { return m_uProgram; }
+ 
++	void setCustomUniforms( float r, float g, float b, float a )
++	{
++		m_fCustomUniforms[0] = r;
++		m_fCustomUniforms[1] = g;
++		m_fCustomUniforms[2] = b;
++		m_fCustomUniforms[3] = a;
++	}
++
+ private:
+     bool updateUniformLocation(GLint location, GLvoid* data, unsigned int bytes);
+     const char* description();
+@@ -199,6 +212,7 @@ private:
+     GLuint            m_uVertShader;
+     GLuint            m_uFragShader;
+     GLint             m_uUniforms[kCCUniform_MAX];
++	float			  m_fCustomUniforms[4];
+     struct _hashUniformEntry* m_pHashForUniforms;
+     bool              m_bUsesTime;
+ };
+diff --git a/cocos2dx/sprite_nodes/CCSprite.cpp b/cocos2dx/sprite_nodes/CCSprite.cpp
+index baab01d..925f794 100644
+--- a/cocos2dx/sprite_nodes/CCSprite.cpp
++++ b/cocos2dx/sprite_nodes/CCSprite.cpp
+@@ -299,6 +299,12 @@ CCSprite::CCSprite(void)
+ : m_bShouldBeHidden(false),
+ m_pobTexture(NULL)
+ {
++    m_nodeType = ND_BITMAP;
++
++	m_fCustomUniforms[0] = 0.0f;
++	m_fCustomUniforms[1] = 0.0f;
++	m_fCustomUniforms[2] = 0.0f;
++	m_fCustomUniforms[3] = 0.0f;
+ }
+ 
+ CCSprite::~CCSprite(void)
+@@ -551,6 +557,8 @@ void CCSprite::draw(void)
+ 
+     CCAssert(!m_pobBatchNode, "If CCSprite is being rendered by CCSpriteBatchNode, CCSprite#draw SHOULD NOT be called");
+ 
++	getShaderProgram()->setCustomUniforms( m_fCustomUniforms[0], m_fCustomUniforms[1], m_fCustomUniforms[2], m_fCustomUniforms[3] );
++
+     CC_NODE_DRAW_SETUP();
+ 
+     ccGLBlendFunc( m_sBlendFunc.src, m_sBlendFunc.dst );
+diff --git a/cocos2dx/sprite_nodes/CCSprite.h b/cocos2dx/sprite_nodes/CCSprite.h
+index 46bfbcf..d1684a3 100644
+--- a/cocos2dx/sprite_nodes/CCSprite.h
++++ b/cocos2dx/sprite_nodes/CCSprite.h
+@@ -534,6 +534,17 @@ protected:
+     // image is flipped
+     bool m_bFlipX;                              /// Whether the sprite is flipped horizaontally or not.
+     bool m_bFlipY;                              /// Whether the sprite is flipped vertically or not.
++
++public:
++	void setCustomUniforms( float r, float g, float b, float a )
++	{
++		m_fCustomUniforms[0] = r;
++		m_fCustomUniforms[1] = g;
++		m_fCustomUniforms[2] = b;
++		m_fCustomUniforms[3] = a;
++	}
++protected:
++	float m_fCustomUniforms[4];
+ };
+ 
+ 
+diff --git a/cocos2dx/sprite_nodes/CCSpriteFrameCache.cpp b/cocos2dx/sprite_nodes/CCSpriteFrameCache.cpp
+index de55c8f..0346265 100644
+--- a/cocos2dx/sprite_nodes/CCSpriteFrameCache.cpp
++++ b/cocos2dx/sprite_nodes/CCSpriteFrameCache.cpp
+@@ -302,7 +302,7 @@ void CCSpriteFrameCache::removeUnusedSpriteFrames(void)
+         CCSpriteFrame* spriteFrame = (CCSpriteFrame*)pElement->getObject();
+         if( spriteFrame->retainCount() == 1 ) 
+         {
+-            CCLOG("cocos2d: CCSpriteFrameCache: removing unused frame: %s", pElement->getStrKey());
++            //CCLOG("cocos2d: CCSpriteFrameCache: removing unused frame: %s", pElement->getStrKey());
+             m_pSpriteFrames->removeObjectForElememt(pElement);
+             bRemoved = true;
+         }
+diff --git a/cocos2dx/support/ccUTF8.cpp b/cocos2dx/support/ccUTF8.cpp
+index 963d5cd..bdb41e3 100644
+--- a/cocos2dx/support/ccUTF8.cpp
++++ b/cocos2dx/support/ccUTF8.cpp
+@@ -34,70 +34,6 @@ int cc_wcslen(const unsigned short* str)
+     return i;
+ }
+ 
+-/* Code from GLIB gutf8.c starts here. */
+-
+-#define UTF8_COMPUTE(Char, Mask, Len)        \
+-if (Char < 128)                \
+-{                        \
+-Len = 1;                    \
+-Mask = 0x7f;                \
+-}                        \
+-else if ((Char & 0xe0) == 0xc0)        \
+-{                        \
+-Len = 2;                    \
+-Mask = 0x1f;                \
+-}                        \
+-else if ((Char & 0xf0) == 0xe0)        \
+-{                        \
+-Len = 3;                    \
+-Mask = 0x0f;                \
+-}                        \
+-else if ((Char & 0xf8) == 0xf0)        \
+-{                        \
+-Len = 4;                    \
+-Mask = 0x07;                \
+-}                        \
+-else if ((Char & 0xfc) == 0xf8)        \
+-{                        \
+-Len = 5;                    \
+-Mask = 0x03;                \
+-}                        \
+-else if ((Char & 0xfe) == 0xfc)        \
+-{                        \
+-Len = 6;                    \
+-Mask = 0x01;                \
+-}                        \
+-else                        \
+-Len = -1;
+-
+-#define UTF8_LENGTH(Char)            \
+-((Char) < 0x80 ? 1 :                \
+-((Char) < 0x800 ? 2 :            \
+-((Char) < 0x10000 ? 3 :            \
+-((Char) < 0x200000 ? 4 :            \
+-((Char) < 0x4000000 ? 5 : 6)))))
+-
+-
+-#define UTF8_GET(Result, Chars, Count, Mask, Len)    \
+-(Result) = (Chars)[0] & (Mask);            \
+-for ((Count) = 1; (Count) < (Len); ++(Count))        \
+-{                            \
+-if (((Chars)[(Count)] & 0xc0) != 0x80)        \
+-{                        \
+-(Result) = -1;                \
+-break;                    \
+-}                        \
+-(Result) <<= 6;                    \
+-(Result) |= ((Chars)[(Count)] & 0x3f);        \
+-}
+-
+-#define UNICODE_VALID(Char)            \
+-((Char) < 0x110000 &&                \
+-(((Char) & 0xFFFFF800) != 0xD800) &&        \
+-((Char) < 0xFDD0 || (Char) > 0xFDEF) &&    \
+-((Char) & 0xFFFE) != 0xFFFE)
+-
+-
+ static const char utf8_skip_data[256] = {
+     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+     1, 1, 1, 1, 1, 1, 1,
+@@ -121,6 +57,11 @@ static const char *const g_utf8_skip = utf8_skip_data;
+ 
+ #define cc_utf8_next_char(p) (char *)((p) + g_utf8_skip[*(unsigned char *)(p)])
+ 
++char* cc_utf8_next_char_help( char* p )
++{
++	return cc_utf8_next_char( p );
++}
++
+ /*
+  * @str:    the string to search through.
+  * @c:        the character to not look for.
+@@ -259,7 +200,7 @@ cc_utf8_strlen (const char * p, int max)
+  *
+  * Return value: the resulting character
+  **/
+-static unsigned int
++unsigned int
+ cc_utf8_get_char (const char * p)
+ {
+     int i, mask = 0, len;
+diff --git a/cocos2dx/support/ccUTF8.h b/cocos2dx/support/ccUTF8.h
+index 87c7a46..79e65c6 100644
+--- a/cocos2dx/support/ccUTF8.h
++++ b/cocos2dx/support/ccUTF8.h
+@@ -11,6 +11,70 @@
+ #include "platform/CCPlatformMacros.h"
+ #include <vector>
+ 
++/* Code from GLIB gutf8.c starts here. */
++
++#define UTF8_COMPUTE(Char, Mask, Len)        \
++	if ((unsigned char)Char < 128)				\
++		{						\
++		Len = 1;					\
++		Mask = 0x7f;				\
++		}						\
++	  else if (((unsigned char)Char & 0xe0) == 0xc0)		\
++		{						\
++		Len = 2;					\
++		Mask = 0x1f;				\
++		}						\
++	  else if (((unsigned char)Char & 0xf0) == 0xe0)		\
++		{						\
++		Len = 3;					\
++		Mask = 0x0f;				\
++		}						\
++	  else if (((unsigned char)Char & 0xf8) == 0xf0)		\
++		{						\
++		Len = 4;					\
++		Mask = 0x07;				\
++		}						\
++	  else if (((unsigned char)Char & 0xfc) == 0xf8)		\
++		{						\
++		Len = 5;					\
++		Mask = 0x03;				\
++		}						\
++	  else if (((unsigned char)Char & 0xfe) == 0xfc)		\
++		{						\
++		Len = 6;					\
++		Mask = 0x01;				\
++		}						\
++	  else						\
++	  Len = -1;
++
++#define UTF8_LENGTH(Char)            \
++	((Char) < 0x80 ? 1 :                \
++	((Char) < 0x800 ? 2 :            \
++	((Char) < 0x10000 ? 3 :            \
++	((Char) < 0x200000 ? 4 :            \
++	((Char) < 0x4000000 ? 5 : 6)))))
++
++
++#define UTF8_GET(Result, Chars, Count, Mask, Len)    \
++	(Result) = (Chars)[0] & (Mask);            \
++	for ((Count) = 1; (Count) < (Len); ++(Count))        \
++{                            \
++	if (((Chars)[(Count)] & 0xc0) != 0x80)        \
++{                        \
++	(Result) = -1;                \
++	break;                    \
++}                        \
++	(Result) <<= 6;                    \
++	(Result) |= ((Chars)[(Count)] & 0x3f);        \
++}
++
++#define UNICODE_VALID(Char)            \
++	((Char) < 0x110000 &&                \
++	(((Char) & 0xFFFFF800) != 0xD800) &&        \
++	((Char) < 0xFDD0 || (Char) > 0xFDEF) &&    \
++	((Char) & 0xFFFE) != 0xFFFE)
++
++
+ NS_CC_BEGIN
+ 
+ CC_DLL int cc_wcslen(const unsigned short* str);
+@@ -92,6 +156,11 @@ cc_utf16_to_utf8 (const unsigned short  *str,
+                   long            *items_read,
+                   long            *items_written);
+ 
++CC_DLL unsigned int
++cc_utf8_get_char (const char * p);
++
++CC_DLL char* cc_utf8_next_char_help( char* p );
++
+ NS_CC_END
+ 
+ #endif /* defined(__cocos2dx__ccUTF8__) */
+diff --git a/cocos2dx/textures/CCTextureCache.cpp b/cocos2dx/textures/CCTextureCache.cpp
+index 43e7100..ce238e8 100644
+--- a/cocos2dx/textures/CCTextureCache.cpp
++++ b/cocos2dx/textures/CCTextureCache.cpp
+@@ -52,6 +52,9 @@ typedef struct _AsyncStruct
+     std::string            filename;
+     CCObject    *target;
+     SEL_CallFuncO        selector;
++	SEL_CallFuncNI		selectorEx;
++	int					nIndex;
++	int                 nTextureIndex;
+ } AsyncStruct;
+ 
+ typedef struct _ImageInfo
+@@ -137,23 +140,23 @@ static void* loadImage(void* data)
+ 
+         const char *filename = pAsyncStruct->filename.c_str();
+ 
++        CCImage *pImage = NULL;
+         // compute image type
+         CCImage::EImageFormat imageType = computeImageFormatType(pAsyncStruct->filename);
+         if (imageType == CCImage::kFmtUnKnown)
+         {
+             CCLOG("unsupported format %s",filename);
+-            delete pAsyncStruct;
+-            
+-            continue;
+         }
+-        
+-        // generate image            
+-        CCImage *pImage = new CCImage();
+-        if (pImage && !pImage->initWithImageFileThreadSafe(filename, imageType))
++        else
+         {
+-            CC_SAFE_RELEASE(pImage);
+-            CCLOG("can not load %s", filename);
+-            continue;
++            // generate image            
++            pImage = new CCImage();
++            if (pImage && !pImage->initWithImageFileThreadSafe(filename, imageType))
++            {
++                CC_SAFE_RELEASE(pImage);
++                pImage = NULL;
++                CCLOG("can not load %s", filename);
++            }
+         }
+ 
+         // generate image info
+@@ -297,6 +300,9 @@ void CCTextureCache::addImageAsync(const char *path, CCObject *target, SEL_CallF
+     data->filename = fullpath.c_str();
+     data->target = target;
+     data->selector = selector;
++    data->selectorEx = NULL;
++    data->nIndex = -1;
++    data->nTextureIndex = -1;
+ 
+     // add async struct into queue
+     pthread_mutex_lock(&s_asyncStructQueueMutex);
+@@ -306,6 +312,74 @@ void CCTextureCache::addImageAsync(const char *path, CCObject *target, SEL_CallF
+     pthread_cond_signal(&s_SleepCondition);
+ }
+ 
++void CCTextureCache::addImageAsync(const char *path, CCObject *target, SEL_CallFuncNI selector, int nIndex, int nTextureIndex)
++{
++	CCAssert(path != NULL, "TextureCache: fileimage MUST not be NULL");    
++
++	CCTexture2D *texture = NULL;
++
++	// optimization
++
++	std::string pathKey = path;
++
++	pathKey = CCFileUtils::sharedFileUtils()->fullPathForFilename(pathKey.c_str());
++	texture = (CCTexture2D*)m_pTextures->objectForKey(pathKey.c_str());
++
++	std::string fullpath = pathKey;
++	if (texture != NULL)
++	{
++		if (target && selector)
++		{
++			(target->*selector)(texture,nIndex,nTextureIndex);
++		}
++
++		return;
++	}
++
++	// lazy init
++	if (s_pAsyncStructQueue == NULL)
++	{             
++		s_pAsyncStructQueue = new queue<AsyncStruct*>();
++		s_pImageQueue = new queue<ImageInfo*>();        
++
++		pthread_mutex_init(&s_asyncStructQueueMutex, NULL);
++		pthread_mutex_init(&s_ImageInfoMutex, NULL);
++		pthread_mutex_init(&s_SleepMutex, NULL);
++		pthread_cond_init(&s_SleepCondition, NULL);
++		pthread_create(&s_loadingThread, NULL, loadImage, NULL);
++
++		need_quit = false;
++	}
++
++	if (0 == s_nAsyncRefCount)
++	{
++		CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(CCTextureCache::addImageAsyncCallBack), this, 0, false);
++	}
++
++	++s_nAsyncRefCount;
++
++	if (target)
++	{
++		target->retain();
++	}
++
++	// generate async struct
++	AsyncStruct *data = new AsyncStruct();
++	data->filename = fullpath.c_str();
++	data->target = target;
++	data->selector = NULL;
++	data->selectorEx = selector;
++	data->nIndex = nIndex;
++	data->nTextureIndex = nTextureIndex;
++
++	// add async struct into queue
++	pthread_mutex_lock(&s_asyncStructQueueMutex);
++	s_pAsyncStructQueue->push(data);
++	pthread_mutex_unlock(&s_asyncStructQueueMutex);
++
++	pthread_cond_signal(&s_SleepCondition);
++}
++
+ void CCTextureCache::addImageAsyncCallBack(float dt)
+ {
+     // the image is generated in loading thread
+@@ -327,6 +401,25 @@ void CCTextureCache::addImageAsyncCallBack(float dt)
+ 
+         CCObject *target = pAsyncStruct->target;
+         SEL_CallFuncO selector = pAsyncStruct->selector;
++        SEL_CallFuncNI selectorEx = pAsyncStruct->selectorEx;
++
++        if( pImage == NULL )
++        {
++            if( target == NULL )
++            {
++                if( selector )
++                    (target->*selector)(NULL);
++                else if( selectorEx )
++                    (target->*selectorEx)(NULL,pAsyncStruct->nIndex,pAsyncStruct->nTextureIndex);
++                target->release();
++            }
++
++            delete pAsyncStruct;
++            delete pImageInfo;
++
++            return;
++        }
++
+         const char* filename = pAsyncStruct->filename.c_str();
+ 
+         // generate texture in render thread
+@@ -346,11 +439,14 @@ void CCTextureCache::addImageAsyncCallBack(float dt)
+         m_pTextures->setObject(texture, filename);
+         texture->autorelease();
+ 
+-        if (target && selector)
++        if( target )
+         {
+-            (target->*selector)(texture);
++            if( selector )
++                (target->*selector)(texture);
++            else if( selectorEx )
++                (target->*selectorEx)(texture,pAsyncStruct->nIndex,pAsyncStruct->nTextureIndex);
+             target->release();
+-        }        
++        }
+ 
+         pImage->release();
+         delete pAsyncStruct;
+@@ -597,7 +693,7 @@ void CCTextureCache::removeUnusedTextures()
+         list<CCDictElement*> elementToRemove;
+         CCDICT_FOREACH(m_pTextures, pElement)
+         {
+-            CCLOG("cocos2d: CCTextureCache: texture: %s", pElement->getStrKey());
++            //CCLOG("cocos2d: CCTextureCache: texture: %s", pElement->getStrKey());
+             CCTexture2D *value = (CCTexture2D*)pElement->getObject();
+             if (value->retainCount() == 1)
+             {
+@@ -608,7 +704,7 @@ void CCTextureCache::removeUnusedTextures()
+         // remove elements
+         for (list<CCDictElement*>::iterator iter = elementToRemove.begin(); iter != elementToRemove.end(); ++iter)
+         {
+-            CCLOG("cocos2d: CCTextureCache: removing unused texture: %s", (*iter)->getStrKey());
++            //CCLOG("cocos2d: CCTextureCache: removing unused texture: %s", (*iter)->getStrKey());
+             m_pTextures->removeObjectForElememt(*iter);
+         }
+     }
+diff --git a/cocos2dx/textures/CCTextureCache.h b/cocos2dx/textures/CCTextureCache.h
+index 2097966..041c094 100644
+--- a/cocos2dx/textures/CCTextureCache.h
++++ b/cocos2dx/textures/CCTextureCache.h
+@@ -97,6 +97,7 @@ public:
+     */
+     
+     void addImageAsync(const char *path, CCObject *target, SEL_CallFuncO selector);
++	void addImageAsync(const char *path, CCObject *target, SEL_CallFuncNI selector, int nIndex, int nTextureIndex);
+ 
+     /* Returns a Texture2D object given an CGImageRef image
+     * If the image was not previously loaded, it will create a new CCTexture2D object and it will return it.
+diff --git a/extensions/proj.linux/Makefile b/extensions/proj.linux/Makefile
+index 0aa7a1d..008251a 100644
+--- a/extensions/proj.linux/Makefile
++++ b/extensions/proj.linux/Makefile
+@@ -109,6 +109,7 @@ SOURCES = ../CCBReader/CCBFileLoader.cpp \
+ ../CCArmature/utils/CCTweenFunction.cpp \
+ ../CCArmature/utils/CCUtilMath.cpp \
+ 
++DEBUG := 1
+ include $(COCOS_ROOT)/cocos2dx/proj.linux/cocos2dx.mk
+ 
+ CXXFLAGS += -Wno-multichar -Wno-delete-non-virtual-dtor
+diff --git a/scripting/lua/cocos2dx_support/LuaCocos2d.cpp b/scripting/lua/cocos2dx_support/LuaCocos2d.cpp
+index 41bfc90..df53ac8 100644
+--- a/scripting/lua/cocos2dx_support/LuaCocos2d.cpp
++++ b/scripting/lua/cocos2dx_support/LuaCocos2d.cpp
+@@ -1,6 +1,6 @@
+ /*
+ ** Lua binding: Cocos2d
+-** Generated automatically by tolua++-1.0.92 on Fri May 24 13:02:46 2013.
++** Generated automatically by tolua++-1.0.93 on Mon Sep 23 22:30:41 2013.
+ */
+ 
+ /****************************************************************************
+@@ -387,13 +387,13 @@ static void tolua_reg_types (lua_State* tolua_S)
+  tolua_usertype(tolua_S,"CCLabelTTF");
+  tolua_usertype(tolua_S,"CCScale9Sprite");
+  tolua_usertype(tolua_S,"CCMoveTo");
+- tolua_usertype(tolua_S,"CCTransitionSplitRows");
++ tolua_usertype(tolua_S,"CCSprite");
+  tolua_usertype(tolua_S,"CCFollow");
+  tolua_usertype(tolua_S,"CCBlink");
+  tolua_usertype(tolua_S,"CCTexture2D");
+  tolua_usertype(tolua_S,"CCTouch");
+- tolua_usertype(tolua_S,"CCTransitionSplitCols");
+- tolua_usertype(tolua_S,"CCMenu");
++ tolua_usertype(tolua_S,"CCParticleSystemQuad");
++ tolua_usertype(tolua_S,"CCTransitionMoveInB");
+  tolua_usertype(tolua_S,"CCToggleVisibility");
+  tolua_usertype(tolua_S,"CCTMXTilesetInfo");
+  tolua_usertype(tolua_S,"CCNodeRGBA");
+@@ -401,7 +401,7 @@ static void tolua_reg_types (lua_State* tolua_S)
+  tolua_usertype(tolua_S,"CCMenuItemAtlasFont");
+  tolua_usertype(tolua_S,"CCTransitionProgress");
+  tolua_usertype(tolua_S,"CCTransitionFadeDown");
+- tolua_usertype(tolua_S,"ccPointSprite");
++ tolua_usertype(tolua_S,"CCWavesTiles3D");
+  tolua_usertype(tolua_S,"CCFadeOutDownTiles");
+  tolua_usertype(tolua_S,"CCTMXTiledMap");
+  tolua_usertype(tolua_S,"CCCardinalSplineBy");
+@@ -414,7 +414,7 @@ static void tolua_reg_types (lua_State* tolua_S)
+  tolua_usertype(tolua_S,"CCEaseBackIn");
+  tolua_usertype(tolua_S,"CCTransitionScene");
+  tolua_usertype(tolua_S,"CCGridAction");
+- tolua_usertype(tolua_S,"CCTransitionFlipY");
++ tolua_usertype(tolua_S,"CCFiniteTimeAction");
+  tolua_usertype(tolua_S,"CCSpriteFrameCache");
+  tolua_usertype(tolua_S,"CCMotionStreak");
+  tolua_usertype(tolua_S,"CCAnimate");
+@@ -443,8 +443,9 @@ static void tolua_reg_types (lua_State* tolua_S)
+  tolua_usertype(tolua_S,"CCWaves");
+  tolua_usertype(tolua_S,"CCParticleFireworks");
+  tolua_usertype(tolua_S,"CCEvent");
++ tolua_usertype(tolua_S,"CCShaderCache");
+  tolua_usertype(tolua_S,"CCActionInterval");
+- tolua_usertype(tolua_S,"CCRenderTexture");
++ tolua_usertype(tolua_S,"CCLabelBMFont");
+  tolua_usertype(tolua_S,"CCObject");
+  tolua_usertype(tolua_S,"CCEaseBackInOut");
+  tolua_usertype(tolua_S,"CCAtlasNode");
+@@ -455,7 +456,7 @@ static void tolua_reg_types (lua_State* tolua_S)
+  tolua_usertype(tolua_S,"CCLiquid");
+  tolua_usertype(tolua_S,"Tile");
+  tolua_usertype(tolua_S,"CCEaseBounce");
+- tolua_usertype(tolua_S,"CCGLProgram");
++ tolua_usertype(tolua_S,"CCSpeed");
+  tolua_usertype(tolua_S,"CCTransitionMoveInL");
+  tolua_usertype(tolua_S,"CCSpriteFrame");
+  tolua_usertype(tolua_S,"CCJumpBy");
+@@ -519,9 +520,9 @@ static void tolua_reg_types (lua_State* tolua_S)
+  tolua_usertype(tolua_S,"CCNode");
+  tolua_usertype(tolua_S,"CCBezierTo");
+  tolua_usertype(tolua_S,"CCDeccelAmplitude");
++ tolua_usertype(tolua_S,"CCGLProgram");
+  tolua_usertype(tolua_S,"CCControlStepper");
+- tolua_usertype(tolua_S,"CCFiniteTimeAction");
+- tolua_usertype(tolua_S,"CCTransitionProgressRadialCW");
++ tolua_usertype(tolua_S,"CCRipple3D");
+  tolua_usertype(tolua_S,"CCTransitionFadeTR");
+  tolua_usertype(tolua_S,"CCTransitionProgressOutIn");
+  tolua_usertype(tolua_S,"CCMoveBy");
+@@ -529,95 +530,95 @@ static void tolua_reg_types (lua_State* tolua_S)
+  tolua_usertype(tolua_S,"CCCamera");
+  tolua_usertype(tolua_S,"CCSequence");
+  tolua_usertype(tolua_S,"CCDirector");
+- tolua_usertype(tolua_S,"CCDelayTime");
++ tolua_usertype(tolua_S,"CCParticleExplosion");
+  tolua_usertype(tolua_S,"SEL_CCControlHandler");
+  tolua_usertype(tolua_S,"CCHide");
+- tolua_usertype(tolua_S,"CCParticleSystemQuad");
++ tolua_usertype(tolua_S,"CCParticleSun");
+  tolua_usertype(tolua_S,"CCJumpTiles3D");
+  tolua_usertype(tolua_S,"CCTransitionJumpZoom");
+  tolua_usertype(tolua_S,"CCTMXLayer");
+  tolua_usertype(tolua_S,"CCControlSlider");
+- tolua_usertype(tolua_S,"CCWavesTiles3D");
++ tolua_usertype(tolua_S,"CCBezierBy");
++ tolua_usertype(tolua_S,"CCRenderTexture");
+  tolua_usertype(tolua_S,"CCControl");
+  tolua_usertype(tolua_S,"CCSet");
+- tolua_usertype(tolua_S,"ccT2F_Quad");
+  tolua_usertype(tolua_S,"CCEGLView");
+- tolua_usertype(tolua_S,"CCParticleSpiral");
++ tolua_usertype(tolua_S,"ccV2F_C4B_T2F");
+  tolua_usertype(tolua_S,"CCScaleTo");
+- tolua_usertype(tolua_S,"CCParticleSun");
+  tolua_usertype(tolua_S,"CCTransitionZoomFlipY");
++ tolua_usertype(tolua_S,"CCParticleMeteor");
+  tolua_usertype(tolua_S,"CCAffineTransform");
+- tolua_usertype(tolua_S,"CCRepeatForever");
+  tolua_usertype(tolua_S,"CCTransitionMoveInR");
++ tolua_usertype(tolua_S,"CCAnimation");
+  tolua_usertype(tolua_S,"CCJumpTo");
+- tolua_usertype(tolua_S,"CCTMXObjectGroup");
+  tolua_usertype(tolua_S,"CCTransitionFade");
+- tolua_usertype(tolua_S,"CCBezierBy");
++ tolua_usertype(tolua_S,"CCTMXObjectGroup");
++ tolua_usertype(tolua_S,"CCRotateBy");
+  tolua_usertype(tolua_S,"CCReverseTime");
+  tolua_usertype(tolua_S,"CCCallFunc");
+  tolua_usertype(tolua_S,"CCTileMapAtlas");
+- tolua_usertype(tolua_S,"CCTransitionRotoZoom");
+- tolua_usertype(tolua_S,"CCScaleBy");
+- tolua_usertype(tolua_S,"CCParticleBatchNode");
++ tolua_usertype(tolua_S,"ccT2F_Quad");
++ tolua_usertype(tolua_S,"CCTransitionFlipY");
++ tolua_usertype(tolua_S,"CCTransitionSplitRows");
+  tolua_usertype(tolua_S,"CCPlace");
+  tolua_usertype(tolua_S,"CCFileUtils");
+  tolua_usertype(tolua_S,"CCLayer");
+  tolua_usertype(tolua_S,"CCTransitionSlideInR");
+  tolua_usertype(tolua_S,"CCPageTurn3D");
+- tolua_usertype(tolua_S,"CCLabelBMFont");
+- tolua_usertype(tolua_S,"CCParticleSmoke");
++ tolua_usertype(tolua_S,"CCParticleBatchNode");
++ tolua_usertype(tolua_S,"CCMenu");
+  tolua_usertype(tolua_S,"CCEaseElastic");
+- tolua_usertype(tolua_S,"CCParticleExplosion");
++ tolua_usertype(tolua_S,"CCParticleSmoke");
+  tolua_usertype(tolua_S,"CCLayerRGBA");
+- tolua_usertype(tolua_S,"CCTransitionMoveInB");
++ tolua_usertype(tolua_S,"CCTransitionSplitCols");
+  tolua_usertype(tolua_S,"CCTimer");
+  tolua_usertype(tolua_S,"CCUserDefault");
+  tolua_usertype(tolua_S,"CCProgressTimer");
+  tolua_usertype(tolua_S,"CCDictionary");
+  tolua_usertype(tolua_S,"ccV3F_C4B_T2F");
+- tolua_usertype(tolua_S,"CCParticleMeteor");
++ tolua_usertype(tolua_S,"CCParticleSpiral");
+  tolua_usertype(tolua_S,"CCTMXLayerInfo");
++ tolua_usertype(tolua_S,"CCDelayTime");
+  tolua_usertype(tolua_S,"tCCParticle");
+- tolua_usertype(tolua_S,"CCScene");
+  tolua_usertype(tolua_S,"CCTransitionSlideInL");
+  tolua_usertype(tolua_S,"CCTransitionFlipX");
+  tolua_usertype(tolua_S,"CCRepeat");
+- tolua_usertype(tolua_S,"ccBlendFunc");
++ tolua_usertype(tolua_S,"CCScene");
+  tolua_usertype(tolua_S,"CCTransitionProgressInOut");
+  tolua_usertype(tolua_S,"CCLabelAtlas");
+- tolua_usertype(tolua_S,"CCAnimation");
++ tolua_usertype(tolua_S,"CCRepeatForever");
+  tolua_usertype(tolua_S,"CCEaseBounceInOut");
+  
++ tolua_usertype(tolua_S,"ccPointSprite");
++ tolua_usertype(tolua_S,"CCTransitionProgressRadialCW");
++ tolua_usertype(tolua_S,"CCShatteredTiles3D");
+  tolua_usertype(tolua_S,"CCSplitCols");
++ tolua_usertype(tolua_S,"ccV2F_C4F_T2F_Quad");
+  tolua_usertype(tolua_S,"CCSplitRows");
+- tolua_usertype(tolua_S,"CCRotateBy");
++ tolua_usertype(tolua_S,"CCAccelAmplitude");
+  tolua_usertype(tolua_S,"CCFadeOutBLTiles");
+- tolua_usertype(tolua_S,"ccV2F_C4F_T2F_Quad");
+  tolua_usertype(tolua_S,"ccV3F_C4B_T2F_Quad");
+- tolua_usertype(tolua_S,"CCAccelAmplitude");
+- tolua_usertype(tolua_S,"CCSprite");
+- tolua_usertype(tolua_S,"CCShatteredTiles3D");
+  tolua_usertype(tolua_S,"CCFadeOut");
+  tolua_usertype(tolua_S,"CCLayerMultiplex");
+  tolua_usertype(tolua_S,"CCControlPotentiometer");
+- tolua_usertype(tolua_S,"CCRipple3D");
+- tolua_usertype(tolua_S,"CCEaseExponentialOut");
++ tolua_usertype(tolua_S,"CCFlipX3D");
++ tolua_usertype(tolua_S,"CCWaves3D");
+  tolua_usertype(tolua_S,"CCMenuItem");
+  tolua_usertype(tolua_S,"ccColor4B");
+- tolua_usertype(tolua_S,"CCFlipX3D");
++ tolua_usertype(tolua_S,"CCScaleBy");
+  tolua_usertype(tolua_S,"ccTex2F");
+  tolua_usertype(tolua_S,"CCArray");
+- tolua_usertype(tolua_S,"CCWaves3D");
+- tolua_usertype(tolua_S,"CCSkewTo");
+- tolua_usertype(tolua_S,"ccV2F_C4B_T2F");
+  tolua_usertype(tolua_S,"CCEaseElasticInOut");
++ tolua_usertype(tolua_S,"CCSkewTo");
++ tolua_usertype(tolua_S,"ccBlendFunc");
++ tolua_usertype(tolua_S,"CCEaseExponentialOut");
+  tolua_usertype(tolua_S,"CCEaseInOut");
+  tolua_usertype(tolua_S,"ccAnimationFrameData");
+  tolua_usertype(tolua_S,"CCEaseOut");
+  tolua_usertype(tolua_S,"CCEaseIn");
+  tolua_usertype(tolua_S,"CCTextFieldTTF");
+- tolua_usertype(tolua_S,"CCSpeed");
+  tolua_usertype(tolua_S,"CCFadeIn");
++ tolua_usertype(tolua_S,"CCTransitionRotoZoom");
+  tolua_usertype(tolua_S,"CCTransitionFadeBL");
+  tolua_usertype(tolua_S,"ccVertex3F");
+  tolua_usertype(tolua_S,"CCEaseBounceOut");
+@@ -16861,6 +16862,140 @@ static int tolua_Cocos2d_CCNode_unregisterScriptHandler00(lua_State* tolua_S)
+ }
+ #endif //#ifndef TOLUA_DISABLE
+ 
++/* method: getNodeType of class  CCNode */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCNode_getNodeType00
++static int tolua_Cocos2d_CCNode_getNodeType00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCNode",0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,2,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCNode* self = (CCNode*)  tolua_tousertype(tolua_S,1,0);
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getNodeType'", NULL);
++#endif
++  {
++   NodeType tolua_ret = (NodeType)  self->getNodeType();
++   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'getNodeType'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: getInstanceName of class  CCNode */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCNode_getInstanceName00
++static int tolua_Cocos2d_CCNode_getInstanceName00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCNode",0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,2,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCNode* self = (CCNode*)  tolua_tousertype(tolua_S,1,0);
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getInstanceName'", NULL);
++#endif
++  {
++   std::string tolua_ret = (std::string)  self->getInstanceName();
++   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'getInstanceName'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setInstanceName of class  CCNode */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCNode_setInstanceName00
++static int tolua_Cocos2d_CCNode_setInstanceName00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCNode",0,&tolua_err) ||
++     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,3,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCNode* self = (CCNode*)  tolua_tousertype(tolua_S,1,0);
++  std::string name = ((std::string)  tolua_tocppstring(tolua_S,2,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setInstanceName'", NULL);
++#endif
++  {
++   self->setInstanceName(name);
++   tolua_pushcppstring(tolua_S,(const char*)name);
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setInstanceName'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: getChildByName of class  CCNode */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCNode_getChildByName00
++static int tolua_Cocos2d_CCNode_getChildByName00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCNode",0,&tolua_err) ||
++     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,3,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCNode* self = (CCNode*)  tolua_tousertype(tolua_S,1,0);
++  const char* name = ((const char*)  tolua_tostring(tolua_S,2,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getChildByName'", NULL);
++#endif
++  {
++   CCNode* tolua_ret = (CCNode*)  self->getChildByName(name);
++    int nID = (tolua_ret) ? (int)tolua_ret->m_uID : -1;
++    int* pLuaID = (tolua_ret) ? &tolua_ret->m_nLuaID : NULL;
++    toluafix_pushusertype_ccobject(tolua_S, nID, pLuaID, (void*)tolua_ret,"CCNode");
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'getChildByName'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
+ /* method: create of class  CCNode */
+ #ifndef TOLUA_DISABLE_tolua_Cocos2d_CCNode_create00
+ static int tolua_Cocos2d_CCNode_create00(lua_State* tolua_S)
+@@ -21827,6 +21962,45 @@ static int tolua_Cocos2d_CCSprite_setDisplayFrameWithAnimationName00(lua_State*
+ }
+ #endif //#ifndef TOLUA_DISABLE
+ 
++/* method: setCustomUniforms of class  CCSprite */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCSprite_setCustomUniforms00
++static int tolua_Cocos2d_CCSprite_setCustomUniforms00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCSprite",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,6,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCSprite* self = (CCSprite*)  tolua_tousertype(tolua_S,1,0);
++  float r = ((float)  tolua_tonumber(tolua_S,2,0));
++  float g = ((float)  tolua_tonumber(tolua_S,3,0));
++  float b = ((float)  tolua_tonumber(tolua_S,4,0));
++  float a = ((float)  tolua_tonumber(tolua_S,5,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCustomUniforms'", NULL);
++#endif
++  {
++   self->setCustomUniforms(r,g,b,a);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setCustomUniforms'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
+ /* method: createWithTexture of class  CCSprite */
+ #ifndef TOLUA_DISABLE_tolua_Cocos2d_CCSprite_createWithTexture00
+ static int tolua_Cocos2d_CCSprite_createWithTexture00(lua_State* tolua_S)
+@@ -64509,6 +64683,671 @@ static int tolua_Cocos2d_CCInteger_create00(lua_State* tolua_S)
+ }
+ #endif //#ifndef TOLUA_DISABLE
+ 
++/* method: create of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_create00
++static int tolua_Cocos2d_CCGLProgram_create00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertable(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,2,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  {
++   CCGLProgram* tolua_ret = (CCGLProgram*)  CCGLProgram::create();
++    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCGLProgram");
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'create'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: initWithVertexShaderByteArray of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_initWithVertexShaderByteArray00
++static int tolua_Cocos2d_CCGLProgram_initWithVertexShaderByteArray00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
++     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,4,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  const char* vShaderByteArray = ((const char*)  tolua_tostring(tolua_S,2,0));
++  const char* fShaderByteArray = ((const char*)  tolua_tostring(tolua_S,3,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'initWithVertexShaderByteArray'", NULL);
++#endif
++  {
++   bool tolua_ret = (bool)  self->initWithVertexShaderByteArray(vShaderByteArray,fShaderByteArray);
++   tolua_pushboolean(tolua_S,(bool)tolua_ret);
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'initWithVertexShaderByteArray'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: initWithVertexShaderFilename of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_initWithVertexShaderFilename00
++static int tolua_Cocos2d_CCGLProgram_initWithVertexShaderFilename00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
++     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,4,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  const char* vShaderFilename = ((const char*)  tolua_tostring(tolua_S,2,0));
++  const char* fShaderFilename = ((const char*)  tolua_tostring(tolua_S,3,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'initWithVertexShaderFilename'", NULL);
++#endif
++  {
++   bool tolua_ret = (bool)  self->initWithVertexShaderFilename(vShaderFilename,fShaderFilename);
++   tolua_pushboolean(tolua_S,(bool)tolua_ret);
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'initWithVertexShaderFilename'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: addAttribute of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_addAttribute00
++static int tolua_Cocos2d_CCGLProgram_addAttribute00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,4,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  const char* attributeName = ((const char*)  tolua_tostring(tolua_S,2,0));
++  unsigned int index = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addAttribute'", NULL);
++#endif
++  {
++   self->addAttribute(attributeName,index);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'addAttribute'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: link of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_link00
++static int tolua_Cocos2d_CCGLProgram_link00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,2,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'link'", NULL);
++#endif
++  {
++   bool tolua_ret = (bool)  self->link();
++   tolua_pushboolean(tolua_S,(bool)tolua_ret);
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'link'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: updateUniforms of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_updateUniforms00
++static int tolua_Cocos2d_CCGLProgram_updateUniforms00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,2,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'updateUniforms'", NULL);
++#endif
++  {
++   self->updateUniforms();
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'updateUniforms'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setUniformLocationWith1i of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setUniformLocationWith1i00
++static int tolua_Cocos2d_CCGLProgram_setUniformLocationWith1i00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,4,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  unsigned int location = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
++  unsigned int i1 = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUniformLocationWith1i'", NULL);
++#endif
++  {
++   self->setUniformLocationWith1i(location,i1);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setUniformLocationWith1i'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setUniformLocationWith2i of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setUniformLocationWith2i00
++static int tolua_Cocos2d_CCGLProgram_setUniformLocationWith2i00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,5,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  unsigned int location = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
++  unsigned int i1 = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
++  unsigned int i2 = ((unsigned int)  tolua_tonumber(tolua_S,4,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUniformLocationWith2i'", NULL);
++#endif
++  {
++   self->setUniformLocationWith2i(location,i1,i2);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setUniformLocationWith2i'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setUniformLocationWith3i of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setUniformLocationWith3i00
++static int tolua_Cocos2d_CCGLProgram_setUniformLocationWith3i00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,6,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  unsigned int location = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
++  unsigned int i1 = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
++  unsigned int i2 = ((unsigned int)  tolua_tonumber(tolua_S,4,0));
++  unsigned int i3 = ((unsigned int)  tolua_tonumber(tolua_S,5,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUniformLocationWith3i'", NULL);
++#endif
++  {
++   self->setUniformLocationWith3i(location,i1,i2,i3);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setUniformLocationWith3i'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setUniformLocationWith4i of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setUniformLocationWith4i00
++static int tolua_Cocos2d_CCGLProgram_setUniformLocationWith4i00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,7,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  unsigned int location = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
++  unsigned int i1 = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
++  unsigned int i2 = ((unsigned int)  tolua_tonumber(tolua_S,4,0));
++  unsigned int i3 = ((unsigned int)  tolua_tonumber(tolua_S,5,0));
++  unsigned int i4 = ((unsigned int)  tolua_tonumber(tolua_S,6,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUniformLocationWith4i'", NULL);
++#endif
++  {
++   self->setUniformLocationWith4i(location,i1,i2,i3,i4);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setUniformLocationWith4i'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setUniformLocationWith1f of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setUniformLocationWith1f00
++static int tolua_Cocos2d_CCGLProgram_setUniformLocationWith1f00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,4,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  unsigned int location = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
++  float f1 = ((float)  tolua_tonumber(tolua_S,3,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUniformLocationWith1f'", NULL);
++#endif
++  {
++   self->setUniformLocationWith1f(location,f1);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setUniformLocationWith1f'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setUniformLocationWith2f of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setUniformLocationWith2f00
++static int tolua_Cocos2d_CCGLProgram_setUniformLocationWith2f00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,5,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  unsigned int location = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
++  float f1 = ((float)  tolua_tonumber(tolua_S,3,0));
++  float f2 = ((float)  tolua_tonumber(tolua_S,4,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUniformLocationWith2f'", NULL);
++#endif
++  {
++   self->setUniformLocationWith2f(location,f1,f2);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setUniformLocationWith2f'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setUniformLocationWith3f of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setUniformLocationWith3f00
++static int tolua_Cocos2d_CCGLProgram_setUniformLocationWith3f00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,6,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  unsigned int location = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
++  float f1 = ((float)  tolua_tonumber(tolua_S,3,0));
++  float f2 = ((float)  tolua_tonumber(tolua_S,4,0));
++  float f3 = ((float)  tolua_tonumber(tolua_S,5,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUniformLocationWith3f'", NULL);
++#endif
++  {
++   self->setUniformLocationWith3f(location,f1,f2,f3);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setUniformLocationWith3f'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setUniformLocationWith4f of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setUniformLocationWith4f00
++static int tolua_Cocos2d_CCGLProgram_setUniformLocationWith4f00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,7,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  unsigned int location = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
++  float f1 = ((float)  tolua_tonumber(tolua_S,3,0));
++  float f2 = ((float)  tolua_tonumber(tolua_S,4,0));
++  float f3 = ((float)  tolua_tonumber(tolua_S,5,0));
++  float f4 = ((float)  tolua_tonumber(tolua_S,6,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setUniformLocationWith4f'", NULL);
++#endif
++  {
++   self->setUniformLocationWith4f(location,f1,f2,f3,f4);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setUniformLocationWith4f'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: setCustomUniforms of class  CCGLProgram */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCGLProgram_setCustomUniforms00
++static int tolua_Cocos2d_CCGLProgram_setCustomUniforms00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
++     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,6,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCGLProgram* self = (CCGLProgram*)  tolua_tousertype(tolua_S,1,0);
++  float r = ((float)  tolua_tonumber(tolua_S,2,0));
++  float g = ((float)  tolua_tonumber(tolua_S,3,0));
++  float b = ((float)  tolua_tonumber(tolua_S,4,0));
++  float a = ((float)  tolua_tonumber(tolua_S,5,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setCustomUniforms'", NULL);
++#endif
++  {
++   self->setCustomUniforms(r,g,b,a);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'setCustomUniforms'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: sharedShaderCache of class  CCShaderCache */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCShaderCache_sharedShaderCache00
++static int tolua_Cocos2d_CCShaderCache_sharedShaderCache00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertable(tolua_S,1,"CCShaderCache",0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,2,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  {
++   CCShaderCache* tolua_ret = (CCShaderCache*)  CCShaderCache::sharedShaderCache();
++    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCShaderCache");
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'sharedShaderCache'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: purgeSharedShaderCache of class  CCShaderCache */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCShaderCache_purgeSharedShaderCache00
++static int tolua_Cocos2d_CCShaderCache_purgeSharedShaderCache00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertable(tolua_S,1,"CCShaderCache",0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,2,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  {
++   CCShaderCache::purgeSharedShaderCache();
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'purgeSharedShaderCache'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: programForKey of class  CCShaderCache */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCShaderCache_programForKey00
++static int tolua_Cocos2d_CCShaderCache_programForKey00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCShaderCache",0,&tolua_err) ||
++     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,3,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCShaderCache* self = (CCShaderCache*)  tolua_tousertype(tolua_S,1,0);
++  const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'programForKey'", NULL);
++#endif
++  {
++   CCGLProgram* tolua_ret = (CCGLProgram*)  self->programForKey(key);
++    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCGLProgram");
++  }
++ }
++ return 1;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'programForKey'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
++/* method: addProgram of class  CCShaderCache */
++#ifndef TOLUA_DISABLE_tolua_Cocos2d_CCShaderCache_addProgram00
++static int tolua_Cocos2d_CCShaderCache_addProgram00(lua_State* tolua_S)
++{
++#ifndef TOLUA_RELEASE
++ tolua_Error tolua_err;
++ if (
++     !tolua_isusertype(tolua_S,1,"CCShaderCache",0,&tolua_err) ||
++     !tolua_isusertype(tolua_S,2,"CCGLProgram",0,&tolua_err) ||
++     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
++     !tolua_isnoobj(tolua_S,4,&tolua_err)
++ )
++  goto tolua_lerror;
++ else
++#endif
++ {
++  CCShaderCache* self = (CCShaderCache*)  tolua_tousertype(tolua_S,1,0);
++  CCGLProgram* program = ((CCGLProgram*)  tolua_tousertype(tolua_S,2,0));
++  const char* key = ((const char*)  tolua_tostring(tolua_S,3,0));
++#ifndef TOLUA_RELEASE
++  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addProgram'", NULL);
++#endif
++  {
++   self->addProgram(program,key);
++  }
++ }
++ return 0;
++#ifndef TOLUA_RELEASE
++ tolua_lerror:
++ tolua_error(tolua_S,"#ferror in function 'addProgram'.",&tolua_err);
++ return 0;
++#endif
++}
++#endif //#ifndef TOLUA_DISABLE
++
+ /* Open function */
+ TOLUA_API int tolua_Cocos2d_open (lua_State* tolua_S)
+ {
+@@ -65213,6 +66052,15 @@ TOLUA_API int tolua_Cocos2d_open (lua_State* tolua_S)
+    tolua_function(tolua_S,"getBitsPerComponent",tolua_Cocos2d_CCImage_getBitsPerComponent00);
+   tolua_endmodule(tolua_S);
+   tolua_constant(tolua_S,"kCCNodeTagInvalid",kCCNodeTagInvalid);
++  tolua_constant(tolua_S,"ND_MOVIECLIP",ND_MOVIECLIP);
++  tolua_constant(tolua_S,"ND_BITMAP",ND_BITMAP);
++  tolua_constant(tolua_S,"ND_TTFTEXT",ND_TTFTEXT);
++  tolua_constant(tolua_S,"ND_TTFRICHTEXT",ND_TTFRICHTEXT);
++  tolua_constant(tolua_S,"ND_FRAME",ND_FRAME);
++  tolua_constant(tolua_S,"ND_RECT",ND_RECT);
++  tolua_constant(tolua_S,"ND_BMTEXT",ND_BMTEXT);
++  tolua_constant(tolua_S,"ND_PARTICLE",ND_PARTICLE);
++  tolua_constant(tolua_S,"ND_UNKNOWN",ND_UNKNOWN);
+   tolua_constant(tolua_S,"kCCNodeOnEnter",kCCNodeOnEnter);
+   tolua_constant(tolua_S,"kCCNodeOnExit",kCCNodeOnExit);
+   tolua_constant(tolua_S,"CC_GL_ALL",CC_GL_ALL);
+@@ -65311,6 +66159,10 @@ TOLUA_API int tolua_Cocos2d_open (lua_State* tolua_S)
+    tolua_function(tolua_S,"unscheduleUpdate",tolua_Cocos2d_CCNode_unscheduleUpdate00);
+    tolua_function(tolua_S,"registerScriptHandler",tolua_Cocos2d_CCNode_registerScriptHandler00);
+    tolua_function(tolua_S,"unregisterScriptHandler",tolua_Cocos2d_CCNode_unregisterScriptHandler00);
++   tolua_function(tolua_S,"getNodeType",tolua_Cocos2d_CCNode_getNodeType00);
++   tolua_function(tolua_S,"getInstanceName",tolua_Cocos2d_CCNode_getInstanceName00);
++   tolua_function(tolua_S,"setInstanceName",tolua_Cocos2d_CCNode_setInstanceName00);
++   tolua_function(tolua_S,"getChildByName",tolua_Cocos2d_CCNode_getChildByName00);
+    tolua_function(tolua_S,"create",tolua_Cocos2d_CCNode_create00);
+   tolua_endmodule(tolua_S);
+   #ifdef __cplusplus
+@@ -65813,6 +66665,7 @@ TOLUA_API int tolua_Cocos2d_open (lua_State* tolua_S)
+    tolua_function(tolua_S,"setBatchNode",tolua_Cocos2d_CCSprite_setBatchNode00);
+    tolua_function(tolua_S,"getBatchNode",tolua_Cocos2d_CCSprite_getBatchNode00);
+    tolua_function(tolua_S,"setDisplayFrameWithAnimationName",tolua_Cocos2d_CCSprite_setDisplayFrameWithAnimationName00);
++   tolua_function(tolua_S,"setCustomUniforms",tolua_Cocos2d_CCSprite_setCustomUniforms00);
+    tolua_function(tolua_S,"createWithTexture",tolua_Cocos2d_CCSprite_createWithTexture00);
+    tolua_function(tolua_S,"createWithTexture",tolua_Cocos2d_CCSprite_createWithTexture01);
+    tolua_function(tolua_S,"createWithSpriteFrame",tolua_Cocos2d_CCSprite_createWithSpriteFrame00);
+@@ -67874,6 +68727,45 @@ TOLUA_API int tolua_Cocos2d_open (lua_State* tolua_S)
+    tolua_function(tolua_S,"getValue",tolua_Cocos2d_CCInteger_getValue00);
+    tolua_function(tolua_S,"create",tolua_Cocos2d_CCInteger_create00);
+   tolua_endmodule(tolua_S);
++  tolua_constant(tolua_S,"kCCVertexAttrib_Position",kCCVertexAttrib_Position);
++  tolua_constant(tolua_S,"kCCVertexAttrib_Color",kCCVertexAttrib_Color);
++  tolua_constant(tolua_S,"kCCVertexAttrib_TexCoords",kCCVertexAttrib_TexCoords);
++  tolua_constant(tolua_S,"kCCVertexAttrib_MAX",kCCVertexAttrib_MAX);
++  tolua_constant(tolua_S,"kCCUniformPMatrix",kCCUniformPMatrix);
++  tolua_constant(tolua_S,"kCCUniformMVMatrix",kCCUniformMVMatrix);
++  tolua_constant(tolua_S,"kCCUniformMVPMatrix",kCCUniformMVPMatrix);
++  tolua_constant(tolua_S,"kCCUniformTime",kCCUniformTime);
++  tolua_constant(tolua_S,"kCCUniformSinTime",kCCUniformSinTime);
++  tolua_constant(tolua_S,"kCCUniformCosTime",kCCUniformCosTime);
++  tolua_constant(tolua_S,"kCCUniformRandom01",kCCUniformRandom01);
++  tolua_constant(tolua_S,"kCCUniformSampler",kCCUniformSampler);
++  tolua_constant(tolua_S,"kCCUniformCustom",kCCUniformCustom);
++  tolua_constant(tolua_S,"kCCUniform_MAX",kCCUniform_MAX);
++  tolua_cclass(tolua_S,"CCGLProgram","CCGLProgram","CCObject",NULL);
++  tolua_beginmodule(tolua_S,"CCGLProgram");
++   tolua_function(tolua_S,"create",tolua_Cocos2d_CCGLProgram_create00);
++   tolua_function(tolua_S,"initWithVertexShaderByteArray",tolua_Cocos2d_CCGLProgram_initWithVertexShaderByteArray00);
++   tolua_function(tolua_S,"initWithVertexShaderFilename",tolua_Cocos2d_CCGLProgram_initWithVertexShaderFilename00);
++   tolua_function(tolua_S,"addAttribute",tolua_Cocos2d_CCGLProgram_addAttribute00);
++   tolua_function(tolua_S,"link",tolua_Cocos2d_CCGLProgram_link00);
++   tolua_function(tolua_S,"updateUniforms",tolua_Cocos2d_CCGLProgram_updateUniforms00);
++   tolua_function(tolua_S,"setUniformLocationWith1i",tolua_Cocos2d_CCGLProgram_setUniformLocationWith1i00);
++   tolua_function(tolua_S,"setUniformLocationWith2i",tolua_Cocos2d_CCGLProgram_setUniformLocationWith2i00);
++   tolua_function(tolua_S,"setUniformLocationWith3i",tolua_Cocos2d_CCGLProgram_setUniformLocationWith3i00);
++   tolua_function(tolua_S,"setUniformLocationWith4i",tolua_Cocos2d_CCGLProgram_setUniformLocationWith4i00);
++   tolua_function(tolua_S,"setUniformLocationWith1f",tolua_Cocos2d_CCGLProgram_setUniformLocationWith1f00);
++   tolua_function(tolua_S,"setUniformLocationWith2f",tolua_Cocos2d_CCGLProgram_setUniformLocationWith2f00);
++   tolua_function(tolua_S,"setUniformLocationWith3f",tolua_Cocos2d_CCGLProgram_setUniformLocationWith3f00);
++   tolua_function(tolua_S,"setUniformLocationWith4f",tolua_Cocos2d_CCGLProgram_setUniformLocationWith4f00);
++   tolua_function(tolua_S,"setCustomUniforms",tolua_Cocos2d_CCGLProgram_setCustomUniforms00);
++  tolua_endmodule(tolua_S);
++  tolua_cclass(tolua_S,"CCShaderCache","CCShaderCache","CCObject",NULL);
++  tolua_beginmodule(tolua_S,"CCShaderCache");
++   tolua_function(tolua_S,"sharedShaderCache",tolua_Cocos2d_CCShaderCache_sharedShaderCache00);
++   tolua_function(tolua_S,"purgeSharedShaderCache",tolua_Cocos2d_CCShaderCache_purgeSharedShaderCache00);
++   tolua_function(tolua_S,"programForKey",tolua_Cocos2d_CCShaderCache_programForKey00);
++   tolua_function(tolua_S,"addProgram",tolua_Cocos2d_CCShaderCache_addProgram00);
++  tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  return 1;
+ }
+diff --git a/scripting/lua/proj.linux/Makefile b/scripting/lua/proj.linux/Makefile
+index b4ea45a..4280ae8 100644
+--- a/scripting/lua/proj.linux/Makefile
++++ b/scripting/lua/proj.linux/Makefile
+@@ -48,6 +48,7 @@ SOURCES = ../lua/lapi.o \
+           ../cocos2dx_support/CCBProxy.cpp \
+           ../cocos2dx_support/Lua_extensions_CCB.cpp \
+ 
++DEBUG := 1
+ include ../../../cocos2dx/proj.linux/cocos2dx.mk
+ 
+ TARGET := $(LIB_DIR)/$(TARGET)
+diff --git a/tools/tolua++/CCNode.pkg b/tools/tolua++/CCNode.pkg
+index cebbbf4..8d15742 100644
+--- a/tools/tolua++/CCNode.pkg
++++ b/tools/tolua++/CCNode.pkg
+@@ -2,6 +2,18 @@ enum {
+     kCCNodeTagInvalid = -1,
+ };
+ 
++enum NodeType {
++	ND_MOVIECLIP = 1,   // MovieClip
++	ND_BITMAP = 2,      // CCSprite
++	ND_TTFTEXT = 4,     // CCLabelTTF
++	ND_TTFRICHTEXT = 5, // CCLabelTexFont
++	ND_FRAME  = 7,      // MCFrame
++	ND_RECT   = 8,      // CCNode
++	ND_BMTEXT = 9,      // CCLabelBM
++	ND_PARTICLE = 11,   // CCParticleSystem
++	ND_UNKNOWN  = 999,  // other
++};
++
+ enum {
+     kCCNodeOnEnter,
+     kCCNodeOnExit
+@@ -118,6 +130,11 @@ class CCNode : public CCObject
+     void registerScriptHandler(LUA_FUNCTION funcID);
+     void unregisterScriptHandler(void);
+ 
++	NodeType getNodeType();
++    std::string& getInstanceName();
++    void setInstanceName(std::string &name);
++	CCNode* getChildByName( const char* name );
++
+     static CCNode * create(void);
+ };
+ 
+diff --git a/tools/tolua++/CCShaderCache.pkg b/tools/tolua++/CCShaderCache.pkg
+new file mode 100644
+index 0000000..269c02a
+--- /dev/null
++++ b/tools/tolua++/CCShaderCache.pkg
+@@ -0,0 +1,53 @@
++
++enum {
++    kCCVertexAttrib_Position,
++    kCCVertexAttrib_Color,
++    kCCVertexAttrib_TexCoords,
++
++    kCCVertexAttrib_MAX,
++};
++
++enum {
++	kCCUniformPMatrix,
++	kCCUniformMVMatrix,
++	kCCUniformMVPMatrix,
++	kCCUniformTime,
++	kCCUniformSinTime,
++	kCCUniformCosTime,
++	kCCUniformRandom01,
++	kCCUniformSampler,
++	kCCUniformCustom,
++    
++	kCCUniform_MAX,
++};
++
++class CCGLProgram : public CCObject
++{
++	static CCGLProgram* create();
++
++	bool initWithVertexShaderByteArray( const char* vShaderByteArray, const char* fShaderByteArray );
++	bool initWithVertexShaderFilename( const char* vShaderFilename, const char* fShaderFilename );
++	void addAttribute( const char* attributeName, unsigned int index );
++	bool link();
++	void updateUniforms();
++
++	void setUniformLocationWith1i( unsigned int location, unsigned int i1 );
++	void setUniformLocationWith2i( unsigned int location, unsigned int i1, unsigned int i2 );
++	void setUniformLocationWith3i( unsigned int location, unsigned int i1, unsigned int i2, unsigned int i3 );
++	void setUniformLocationWith4i( unsigned int location, unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4 );
++	void setUniformLocationWith1f( unsigned int location, float f1 );
++	void setUniformLocationWith2f( unsigned int location, float f1, float f2 );
++	void setUniformLocationWith3f( unsigned int location, float f1, float f2, float f3 );
++	void setUniformLocationWith4f( unsigned int location, float f1, float f2, float f3, float f4 );
++
++	void setCustomUniforms( float r, float g, float b, float a );
++};
++
++class CCShaderCache : public CCObject 
++{
++	static CCShaderCache* sharedShaderCache();
++	static void purgeSharedShaderCache();
++
++	CCGLProgram * programForKey( const char* key );
++	void addProgram( CCGLProgram* program, const char* key );
++};
+\ No newline at end of file
+diff --git a/tools/tolua++/CCSprite.pkg b/tools/tolua++/CCSprite.pkg
+index 3912db6..8e54cd9 100644
+--- a/tools/tolua++/CCSprite.pkg
++++ b/tools/tolua++/CCSprite.pkg
+@@ -87,6 +87,8 @@ class CCSprite : public CCNodeRGBA
+ 	CCSpriteBatchNode* getBatchNode();
+ 	void setDisplayFrameWithAnimationName(const char *animationName, int frameIndex);
+ 
++	void setCustomUniforms( float r, float g, float b, float a );
++
+ 	static CCSprite* createWithTexture(CCTexture2D *pTexture);
+ 	static CCSprite* createWithTexture(CCTexture2D *pTexture, CCRect rect);
+ 	static CCSprite* createWithSpriteFrame(CCSpriteFrame *pSpriteFrame);
+diff --git a/tools/tolua++/Cocos2d.pkg b/tools/tolua++/Cocos2d.pkg
+index 685a0d2..f941d9c 100644
+--- a/tools/tolua++/Cocos2d.pkg
++++ b/tools/tolua++/Cocos2d.pkg
+@@ -86,3 +86,5 @@ $pfile "CCControlPotentiometer.pkg"
+ $pfile "CCControlStepper.pkg"
+ $pfile "CCEditBox.pkg"
+ $pfile "CCInteger.pkg"
++
++$pfile "CCShaderCache.pkg"

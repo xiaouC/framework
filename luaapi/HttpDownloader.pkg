@@ -1,0 +1,12 @@
+$#include "NetMessage/HttpDownloader.h"
+
+class CHttpDownloader: public cocos2d::CCObject
+{
+public:
+    static CHttpDownloader* sharedHttpDownloader();
+    static void purgeSharedHttpDownloader();
+    void getContent(const char* sUrl, int nTag);
+    void saveToFile(const char* sUrl, const char* sSaveTo, int nTag);
+    void register_callback(LUA_FUNCTION handler);
+    void register_progress_callback(LUA_FUNCTION handler);
+};

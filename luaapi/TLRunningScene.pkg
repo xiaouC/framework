@@ -1,0 +1,7 @@
+$#include "TLRunningScene.h"
+
+class TLRunningScene : public CCScene
+{
+public:
+	static CCScene* node();
+};

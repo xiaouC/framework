@@ -1,0 +1,36 @@
+$#include "tolua_fix.h"
+$#include "Common/Common.h"
+
+$extern void assert_tolua_error(lua_State* L, const char* msg, tolua_Error* err);
+$#define tolua_error(L, msg, err) assert_tolua_error(L, msg, err)
+
+$pfile "TLRunningScene.pkg"
+$pfile "MovieClip.pkg"
+$pfile "MCLoader.pkg"
+$pfile "MCNode.pkg"
+$pfile "TLWindow.pkg"
+$pfile "TLWindowManager.pkg"
+$pfile "CNetMsg.pkg"
+$pfile "CNetSender.pkg"
+$pfile "CNetReceiver.pkg"
+$pfile "TLEventTrigger.pkg"
+$pfile "ScriptCallFunc.pkg"
+$pfile "TLTimeLine.pkg"
+$pfile "CCLabelTexFont.pkg"
+$pfile "TLMoveObject.pkg"
+$pfile "platform.pkg"
+$pfile "AssetsManager.pkg"
+$pfile "CCTexFontConfig.pkg"
+$pfile "XLDrama.pkg"
+$pfile "SimpleAudioEngine.pkg"
+$pfile "HttpDownloader.pkg"
+$pfile "sdk.pkg"
+$pfile "TLMaskLayer.pkg"
+$pfile "RoleMC.pkg"
+
+$#include <stdlib.h>
+void exit(int status);
+void dump_rusage();
+void dump_texture();
+void quitConfirm();
+void quitApplication();

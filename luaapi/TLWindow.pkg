@@ -1,0 +1,153 @@
+$#include "toluaui/TLWindow.h"
+$using namespace cocos2d;
+
+// window flag ------------------------------------------------------------------------------------
+enum TL_WINDOW_FLAG
+{
+	TL_WINDOW_FLAG_ENABLE				= 0x00000001,					// 是否可用
+	TL_WINDOW_FLAG_PRESSED				= 0x00000002,					// 是否被按下
+	TL_WINDOW_FLAG_DBLCLKED				= 0x00000004,					// 是否处于双击效果下
+	TL_WINDOW_FLAG_DROP_DRAG			= 0x00000008,					// 是否处于拖拽中
+	TL_WINDOW_FLAG_TOUCH_OFF_DROP_DRAG	= 0x00000010,					// 是否可以触发拖拽
+	TL_WINDOW_FLAG_RECEIVE_DROP_DRAG	= 0x00000020,					// 是否接收拖拽
+	TL_WINDOW_FLAG_SCROLL				= 0x00000040,					// 是否可以滚屏
+	TL_WINDOW_FLAG_INPUT				= 0x00000080,					// 是否接受输入
+	TL_WINDOW_FLAG_CLIP					= 0x00000100,					// 是否使用裁剪
+	TL_WINDOW_FLAG_CONTAINER			= 0x00000200,					// 是否容器，可以处理子窗口事件
+};
+
+#define TL_WINDOW_UNIVARSAL
+#define TL_WINDOW_CONTAINER
+#define TL_WINDOW_SCROLL
+#define TL_WINDOW_INPUT
+#define TL_WINDOW_DRAG_DROP
+
+// window event ----------------------------------------------------------------------------------
+enum TL_WINDOW_EVENT
+{
+	TL_EVENT_BUTTON_DOWN,
+	TL_EVENT_BUTTON_UP,
+	TL_EVENT_BUTTON_DBLCLK,
+	TL_EVENT_MOUSE_MOVE,
+
+	TL_EVENT_BUTTON_CLICK,
+	TL_EVENT_BUTTON_RELEASE,							// 
+
+	TL_EVENT_LOST_FOCUS,
+
+	TL_EVENT_ADJUST_LAYOUT,								// 子窗体重新布局
+
+	TL_EVENT_DROP_DRAG_START,							// 触发拖拽成功后,源窗口回调事件
+	TL_EVENT_DROP_DRAG_RECEIVE,							// 目标窗口接受拖拽后，目标窗口回调事件
+	TL_EVENT_DROP_DRAG_END,								// 目标窗口接受拖拽后，源窗口回调事件
+	TL_EVENT_DROP_DRAG_CANCEL,							// 没有窗口接受拖拽或者目标窗口不接受拖拽，源窗口的回调事件
+
+	TL_EVENT_SCROLL_CALCULATE_SCROLL_MAX_LENGTH,		// 计算滚屏的范围
+    TL_EVENT_SCROLL_ON_SCROLL,                          // 调整元素位置
+    TL_EVENT_SCROLL_NEED_ELEMENT,                       // 填充元素
+    
+    TL_EVENT_ACTION,									// window action
+
+    TL_EVENT_ENCHANGED,   
+    
+    TL_EVENT_LONG_PRESS,								// 长按
+};
+
+// window event result -----------------------------------------------------------------------------
+enum TL_WINDOW_EVENT_RESULT
+{
+	TL_EVENT_RESULT_NOT_SET_EVENT = -1,
+	TL_EVENT_RESULT_DROP_DRAG_START_FAILED,								// 触发拖拽失败
+	TL_EVENT_RESULT_DROP_DRAG_START_SUCCEED,							// 触发拖拽成功
+	TL_EVENT_RESULT_DROP_DRAG_CANCEL,									// 取消拖拽,这是目标窗体不接受这次拖拽
+	TL_EVENT_RESULT_DROP_DRAG_RECEIVE_FAILED,							// 目标窗口接收拖拽失败
+	TL_EVENT_RESULT_DROP_DRAG_RECEIVE_SUCCEED,							// 目标窗体接受拖拽,这其实就是一次成功的拖拽
+	TL_EVENT_RESULT_EXEC_LUA_FAILED,                                    // 执行lua脚本失败
+    TL_EVENT_RESULT_BUBLE_UP,                                           // 事件冒泡
+
+	TL_EVENT_RESULT_DEFAULT_PROCESS,
+};
+
+// scroll type -------------------------------------------------------------------------------------------
+enum TL_SCROLL_TYPE
+{
+	TL_SCROLL_TYPE_NONE,
+	TL_SCROLL_TYPE_LEFT_RIGHT,
+	TL_SCROLL_TYPE_UP_DOWN,
+        TL_SCROLL_TYPE_FREE,
+};
+
+// page button location ------------------------------------------------------------------------------------ 
+enum TL_PAGE_BUTTON_LOCATION
+{
+	TL_BUTTON_LOCATION_NONE,
+	TL_BUTTON_LOCATION_LEFT,
+	TL_BUTTON_LOCATION_RIGHT,
+	TL_BUTTON_LOCATION_TOP,
+	TL_BUTTON_LOCATION_BOTTOM,
+};
+
+// input text model ------------------------------------------------------------------------------------
+enum TL_INPUT_TEXT_MODEL
+{
+	TL_INPUT_TEXT_MODEL_NORMAL,
+	TL_INPUT_TEXT_MODEL_NUMBER,
+	TL_INPUT_TEXT_MODEL_ENGLISH,
+	TL_INPUT_TEXT_MODEL_PASSWORD,
+};
+
+// action type
+enum TL_ACTION_TYPE
+{
+	TL_ACTION_TYPE_NONE,
+	TL_ACTION_TYPE_FADE_IN,
+	TL_ACTION_TYPE_FADE_OUT,
+	TL_ACTION_TYPE_BLINK,
+};
+
+class TLWindow : public CCObject
+{
+    static TLWindow* createWindow( CCNode* pMCNode, unsigned int uiWindowFlag = TL_WINDOW_UNIVARSAL );
+    static TLWindow* createEditLabel( CCNode* pMCNode, unsigned int uiWindowFlag = TL_WINDOW_INPUT,
+		const std::string& strFontName = "", float fFontSize = 0.0f );
+	bool AddChildWindow( TLWindow* pChildWindow, bool bAdjustLayout = false );
+	void RemoveAllChildWindow();
+    void RemoveChildWindow( TLWindow* pWindow );
+	CCArray* GetChildWindow();
+
+	void AdjustLayout();
+	TLWindow* FindWindow( const std::string& strWindowName, bool bFindInChild );
+	TLWindow* FindWindow( const CCPoint& point );
+	void RegisterEvent( TL_WINDOW_EVENT eEventType, LUA_FUNCTION nLuaFuncHandle, unsigned long ulUserData1 = 0xFFFFFFFF, unsigned long ulUserData2 = 0xFFFFFFFF );
+
+    CCNode* GetNode();
+    CCNode* GetRootNode();
+    CCNode* GetAttachNode();
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void SetInputTextModel( TL_INPUT_TEXT_MODEL kInputTextModel );
+	void SetInputLimit( int nInputLimit );
+	const char* GetInputText() const;
+	void SetInputText( const std::string& strText );
+	void AppendInputText( const std::string& strText );
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void StartAction( TL_ACTION_TYPE kActionType, float fTime, float fParam );
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const std::string& GetWindowName() const;
+	void SetWindowName( const std::string& strWindowName );
+
+	bool GetIsEnable() const;
+	void SetIsEnable( bool bEnable );
+
+	bool GetIsScroll() const;
+	bool GetIsInput() const;
+
+	bool GetIsVisible();
+	void SetIsVisible( bool bIsVisible );
+
+	CCRect GetWindowRect();
+	void SetWindowPos( const CCPoint& point );
+	const CCPoint& GetWindowPos();
+};

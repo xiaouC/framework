@@ -1,0 +1,28 @@
+$#include "particle/ParticleSystemManager.h"
+$using namespace cocos2d;
+
+class ParticleSystem : public CCNode
+{
+	void GetPosition(float* x = 0, float* y = 0);
+	void SetPosition(float x, float y);
+    void SetPositionX( float x );
+    void SetPositionY( float y );
+	void SetScale(float x, float y);
+	float getTimeLength();
+	void registerPlayEndCallbackHandler(LUA_FUNCTION nLuaHandle);
+
+	int getTextureCount();
+	const char *getTextureName(int idx);
+    void stopInfiniteLoop();
+};
+
+class ParticleSystemManager
+{
+	static ParticleSystemManager* sharedParticleSystemManager();
+
+	void LoadParticleSystems( const char* fileName );
+	
+    ParticleSystem* createWithName( CCNode* node, CCPoint point, int zOder, const char* name, bool loop, float time = -1, bool bNormalSchedule = true );
+    ParticleSystem* createWithNameLua( CCNode* node, int x, int y, const char* name, int loopCnt = -1, bool bNormalSchedule = true );
+    void cleanupCache();
+};

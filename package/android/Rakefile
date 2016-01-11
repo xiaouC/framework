@@ -1,0 +1,118 @@
+namespace :build do
+    desc "内部版"
+    task :xp, [:version] do |task, args|
+        proj_dir = '../android_xp'
+        cmd = "cd #{proj_dir} && sh all.sh --version #{args[:version]} YY大包"
+        puts "\n>>> Run `#{cmd}'"
+
+        system("cp ../../../ttxm_icon/android/yy/72.png ../android_xp/res/drawable-hdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/32.png ../android_xp/res/drawable-ldpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/48.png ../android_xp/res/drawable-mdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/96.png ../android_xp/res/drawable-xhdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/144.png ../android_xp/res/drawable-xxhdpi/ic_launcher.png")
+
+        system(cmd)
+        #回退到原目录，便于批量打包
+        cmd = "cd ../android"
+        system(cmd)
+    end
+
+    desc "内部版-lh格式"
+    task :xp_lh, [:version] do |task, args|
+        proj_dir = '../android_xp_lh'
+        cmd = "cd #{proj_dir} && sh all.sh --version #{args[:version]} YY小包"
+        puts "\n>>> Run `#{cmd}'"
+
+        system("cp ../../../ttxm_icon/android/yy/72.png ../android_xp_lh/res/drawable-hdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/32.png ../android_xp_lh/res/drawable-ldpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/48.png ../android_xp_lh/res/drawable-mdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/96.png ../android_xp_lh/res/drawable-xhdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/144.png ../android_xp_lh/res/drawable-xxhdpi/ic_launcher.png")
+
+
+        system(cmd)
+        #回退到原目录，便于批量打包
+        cmd = "cd ../android"
+        system(cmd)
+    end
+
+    desc "爱贝支付"
+    task :iapppay, [:version] do |task, args|
+        proj_dir = '../android_iapppay'
+        cmd = "cd #{proj_dir} && sh all.sh --version #{args[:version]} 爱贝大包"
+        puts "\n>>> Run `#{cmd}'"
+        system(cmd)
+        #回退到原目录，便于批量打包
+        cmd = "cd ../android"
+        system(cmd)
+    end
+
+    desc "爱贝支付-lh格式"
+    task :iapppay_lh, [:version] do |task, args|
+        proj_dir = '../android_iapppay_lh'
+        cmd = "cd #{proj_dir} && sh all.sh --version #{args[:version]} 爱贝小包"
+        puts "\n>>> Run `#{cmd}'"
+        system(cmd)
+        #回退到原目录，便于批量打包
+        cmd = "cd ../android"
+        system(cmd)
+    end
+
+    desc "卓動支付-lh格式"
+    task :jodo_lh, [:version] do |task, args|
+        proj_dir = '../android_jodo_lh'
+        cmd = "cd #{proj_dir} && sh all.sh --version #{args[:version]} 卓动小包"
+        puts "\n>>> Run `#{cmd}'"
+        system(cmd)
+        #回退到原目录，便于批量打包
+        cmd = "cd ../android"
+        system(cmd)
+    end
+
+    desc "卓動支付-lh格式(增量包)"
+    task :jodo_lh_little, [:version] do |task, args|
+        proj_dir = '../android_jodo_lh'
+        cmd = "cd #{proj_dir} && sh all.sh --version #{args[:version]} 卓动小包(增量包)`"
+        puts "\n>>> Run `#{cmd}'"
+        system(cmd)
+        #回退到原目录，便于批量打包
+        cmd = "cd ../android"
+        system(cmd)
+    end
+
+    desc "YY+筑巢官网支付包"
+    task :yy_zc_pay, [:version] do |task, args|
+        proj_dir = '../android_zc'
+        cmd = "cd #{proj_dir} && sh all.sh --version #{args[:version]} YY筑巢大包"
+        puts "\n>>> Run `#{cmd}'"
+
+        system("cp ../../../ttxm_icon/android/yy/72.png ../android_zc/res/drawable-hdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/32.png ../android_zc/res/drawable-ldpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/48.png ../android_zc/res/drawable-mdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/96.png ../android_zc/res/drawable-xhdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/144.png ../android_zc/res/drawable-xxhdpi/ic_launcher.png")
+
+        system(cmd)
+        #回退到原目录，便于批量打包
+        cmd = "cd ../android"
+        system(cmd)
+    end
+
+    desc "YY+筑巢官网支付包(LH)"
+    task :yy_zc_pay_lh, [:version] do |task, args|
+        proj_dir = '../android_zc_lh'
+        cmd = "cd #{proj_dir} && sh all.sh --version #{args[:version]} YY筑巢小包"
+        puts "\n>>> Run `#{cmd}'"
+
+        system("cp ../../../ttxm_icon/android/yy/72.png ../android_zc_lh/res/drawable-hdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/32.png ../android_zc_lh/res/drawable-ldpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/48.png ../android_zc_lh/res/drawable-mdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/96.png ../android_zc_lh/res/drawable-xhdpi/ic_launcher.png")
+        system("cp ../../../ttxm_icon/android/yy/144.png ../android_zc_lh/res/drawable-xxhdpi/ic_launcher.png")
+
+        system(cmd)
+        #回退到原目录，便于批量打包
+        cmd = "cd ../android"
+        system(cmd)
+    end
+end

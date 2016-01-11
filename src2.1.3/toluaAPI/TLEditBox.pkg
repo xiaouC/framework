@@ -1,0 +1,8 @@
+$#include "UI/TLEditBox.h"
+
+class TLEditBox : public CCIMEDelegate
+{
+    static TLEditBox* getCurrentTLEditBox(void);
+
+    void setText( const char* pszText );
+};

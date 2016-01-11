@@ -1,0 +1,8 @@
+$#include "cocos2Dext/CCTexFontConfig.h"
+
+class CCTexFontConfig
+{
+	static CCTexFontConfig* sharedTexFontConfig();
+	void EnterBackground();
+	void EnterForeground();
+}

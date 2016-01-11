@@ -1,0 +1,103 @@
+$#include "RichText/TLFontTex.h"
+$#include "RichText/TLLabelRichTex.h"
+$#include "RichText/TLRichTexVerbatim.h"
+
+class CCImage
+{
+    typedef enum
+    {
+        kAlignCenter        = 0x33, ///< Horizontal center and vertical center.
+        kAlignTop           = 0x13, ///< Horizontal center and vertical top.
+        kAlignTopRight      = 0x12, ///< Horizontal right and vertical top.
+        kAlignRight         = 0x32, ///< Horizontal right and vertical center.
+        kAlignBottomRight   = 0x22, ///< Horizontal right and vertical bottom.
+        kAlignBottom        = 0x23, ///< Horizontal center and vertical bottom.
+        kAlignBottomLeft    = 0x21, ///< Horizontal left and vertical bottom.
+        kAlignLeft          = 0x31, ///< Horizontal left and vertical center.
+        kAlignTopLeft       = 0x11, ///< Horizontal left and vertical top.
+    }ETextAlign;
+};
+
+class TLFontTex
+{
+	static TLFontTex* sharedTLFontTex();
+
+	CCSpriteBatchNode* newBatchNode();
+
+	void initFontTexture( const char* pFile, int nRow, int nCol, const char* szShaderName, const char* szFontShaderName=NULL );
+
+	chatTexInfo* getChatTextInfo( const char* p );
+	float getFontScale( float fInFontSize );
+
+	void saveFontTexture( const char* szFilePath );
+
+	static void setFontOriginSize( float fFontOriginSize );
+	static void setFontName( const std::string& strFontName );
+    static void setEdgeSize( int nEdgeSize );
+    static void setStrokeEdge( bool nEdgeSize );
+
+	static void setParseRichTextHandler( LUA_FUNCTION nParseHandle );
+};
+
+enum TL_RICH_STRING_FLAG
+{
+    TL_RICH_STRING_FLAG_AUTO_WRAP,                      // 文本根据文本框的宽度，自动换行
+    TL_RICH_STRING_FLAG_ONE_LINE,                       // 把文本限制在一行，可以超出文本框的宽度
+    TL_RICH_STRING_FLAG_ONE_LINE_DOTDOTDOT,             // 把文本限制在一行，如果超出文本框的宽度的话，就会用...来代替后面的内容
+};
+
+class TLLabelRichTex : public CCNodeRGBA
+{
+	static TLLabelRichTex* create( const char* str, float fFontSize, const CCSize& size = CCSizeZero, CCImage::ETextAlign& alignment = CCImage::kAlignLeft, TLWindow* pWindow = NULL );
+
+	void setRichString( const char* str, TL_RICH_STRING_FLAG eRichStringFlag = TL_RICH_STRING_FLAG_AUTO_WRAP );
+	const char* getRichString();
+
+	void setFontSize( float fFontSize );
+	float getFontSize();
+
+	void setAlignment( CCImage::ETextAlign eAlignment );
+	CCImage::ETextAlign getAlignment();
+
+	void setFontColorR( const unsigned char r );
+	void setFontColorG( const unsigned char g );
+	void setFontColorB( const unsigned char b );
+	void setFontColorA( const unsigned char a );
+	void moveOffsetX( float offset, bool flag = false );
+	void appendSpriteToCurrentLine( CCNode* pkNode, float width = 0.0f, float height = 0.0f, float offsetX = 0.0f, bool layout = true );
+    void appendText( const char* szText );
+	CCSize getRealSize();
+
+	void adjustLayout();
+	void appendLine( bool bForcibly );
+
+    TLWindow* getWindow();
+    void setWindow( TLWindow* pWindow );
+    void setCurrentNodeHandler( LUA_FUNCTION nNodeHandler );
+    void clearCurrentNodeHandler();
+
+    void setRealSizeLayout( bool bRealSizeLayout );
+    void setTabNum( int nTabNum );
+    void setWordSpacing( int nWordSpacing );
+    void setLineSpacing( int nLineSpacing );
+
+    void setColorIndex( int nColorIndex );
+    int getColorIndex() const;
+    void changeColorIndex( int nColorIndex );
+
+    CCNode* getTextNode();
+};
+
+class TLRichTexVerbatim : public TLLabelRichTex
+{
+	static TLRichTexVerbatim* create( const char* str, float fFontSize, const CCSize& size = CCSizeZero, const CCImage::ETextAlign& alignment = CCImage::kAlignTopLeft );
+
+	void setRichString( const char* str, TL_RICH_STRING_FLAG eRichStringFlag = TL_RICH_STRING_FLAG_AUTO_WRAP );
+
+	void setSpeed( float nSpeed );
+	void play( LUA_FUNCTION nPlayEndHandler );
+	void stop();
+
+	bool isEnd();
+	void fastEnd();
+};

@@ -1,0 +1,46 @@
+$#include "Common/TLCommon.h"
+
+enum NET_WORK_THREAD_CODE
+{
+    NWTC_SOCKET_RECEIVE_ERROR       = 11,           // socket 
+    NWTC_SOCKET_CONNECT_ERROR       = 12,           // socket connect 操作失败
+    NWTC_INVALID_SOCKET             = 13,           // 无效的 socket
+    NWTC_SOCKET_CONNECT_SUCCESS     = 14,           // 成功
+    NWTC_SOCKET_RECONNECT           = 17,           // 请求断线重连
+    NWTC_SOCKET_DISCONNECT          = 18,           // 网络断开
+    NWTC_SOCKET_SERVER_KICK_OUT     = 19,           // 服务器踢的
+    NWTC_SOCKET_DISCONNECT_2        = 29,           // 有 MSG 发送成功但无法收到服务器返回，这个时候服务器和客户端的状态不一致，需要重新登陆
+};
+
+enum NetWordThreadStatus
+{
+    NWTS_CLOSED                 = 1,
+    NWTS_CONNECTING             = 2,
+    NWTS_CONNECTED              = 3,
+    NWTS_RECONNECT_REQUEST      = 4,
+    NWTS_RECONNECTING           = 5,
+};
+
+void dump_rusage();
+void dump_texture();
+
+float smoothstep( float edge0, float edge1, float x );
+void setReconnectionInterval( float fInterval );
+
+unsigned short getRealMsgID( unsigned int uiMsgID );
+
+void setProjectNickname( const char* szNickname );
+const char* getProjectNickname() const;
+
+float getNodeAlphaLua( CCNode* node );
+void setNodeAlphaLua( CCNode* node, float o );
+void setNodeTLAlphaLua( CCNode* node, float o, bool bUpdate = false );
+void setNodeBLAlphaLua( CCNode* node, float o, bool bUpdate = false );
+void setNodeBRAlphaLua( CCNode* node, float o, bool bUpdate = false );
+void setNodeTRAlphaLua( CCNode* node, float o, bool bUpdate = false );
+void setNodeColor( CCNode* node, const ccColor3B& o );
+void setNodeColorRLua( CCNode* node, float r );
+void setNodeColorGLua( CCNode* node, float g );
+void setNodeColorBLua( CCNode* node, float b );
+
+void setNodeShaderProgram( CCNode* node, CCGLProgram* pShaderProgram );

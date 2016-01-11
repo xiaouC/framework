@@ -1,0 +1,38 @@
+$#include "platform/share.h"
+
+// 微博分享功能接口
+class IShare
+{
+	// 分享文本
+	virtual int text(const char *szText) = 0;
+
+	// 分享链接
+	// szTitle		标题
+	// szDesc		描述
+	// szUrl		链接
+	// szThumbImage 图片缩略图
+	virtual int linkContent(const char *szTitle, const char *szDesc, const char *szUrl, const char *szThumbImage) = 0;
+
+	// 设置lua回调接口
+	virtual void setCallback(LUA_FUNCTION nLuaHander) = 0;
+};
+
+// 分享功能的 简单工厂
+class CShare
+{
+public:
+	enum SHARE_TYPE
+	{
+		SHARE_WXPENYOU	 = 0,  // 微信朋友圈
+		SHARE_MAX		 = 20, // 最大支持
+	};
+
+	enum emERROR
+	{
+		ERR_SUCCESS 	 = 0,
+		ERR_WXNOTINSTALL = 1, // 微信未安装
+		ERR_WXNOTSUPPORT = 2, // 当前版本微信不支持
+	};
+
+	static IShare *get(int nType);
+};

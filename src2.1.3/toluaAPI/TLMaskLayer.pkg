@@ -1,0 +1,17 @@
+$#include "UI/TLMaskLayer.h"
+
+class TLMaskLayer : public CCLayer
+{
+	static TLMaskLayer* sharedTLMaskLayer();
+
+	void resetMaskLayer();
+
+	void setIsMaskScene( bool bMaskScene );
+
+	void appendHighlightRect( const CCRect& rect );
+	void appendHighlightRect2( const CCRect& rect );
+
+	void setMaskColor( float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 0.8f );
+	
+	void test();
+};

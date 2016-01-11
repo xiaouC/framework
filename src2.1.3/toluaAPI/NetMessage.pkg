@@ -1,0 +1,118 @@
+$#include "NetMessage/NetMsg.h"
+$#include "NetMessage/NetMsgProcess.h"
+$#include "NetMessage/HttpDownloader.h"
+$#include "NetMessage/HttpClient.h"
+
+$using namespace framework;
+
+class CNetMsg : public CCObject
+{
+	unsigned int GetMsgID() const;
+	unsigned int GetMsgCode() const;
+    void ParseContent( ::google::protobuf::MessageLite* pMsg );
+	unsigned int GetContentLength();
+	void* GetContentData();
+    char* GetContentStr();
+};
+
+class CNetReceiver
+{
+    static CNetReceiver* SharedNetReceiver();
+
+    // 设置错误消息处理函数
+	void SetMsgErrorDefaultFuncPtr( LUA_FUNCTION nLuaHandle );
+	void RegisterMsgErrorFuncPtr( int nMsgCode, LUA_FUNCTION nLuaHandle );
+
+	void RegisterMsgProcessFuncPtr( unsigned short nMsgID, LUA_FUNCTION nLuaHandler );
+
+    // 给自己发送错误消息
+	void SendErrorMsgToSelf( unsigned int uiMsgCode );
+	void SendMsgToSelf( unsigned int msgID, const char* pszMsgData = NULL, int nLength = 0 );
+    void Reset();
+}
+
+class CNetSender
+{
+    static CNetSender* SharedNetSender();
+
+	void CloseSocket( NetWordThreadStatus state = NWTS_CLOSED );
+	bool Connect( const char* szIPAddr, unsigned int uiPort );
+
+	void NewNetMsgAndSend( unsigned int msgID, const char* buffer, int size, LUA_FUNCTION nCallBackHandler );	
+
+    void appendReconnectVerifyMsgID( unsigned int msgID );
+
+    void setIsNeedReconnection( bool bIsNeedReconnection );
+    bool getIsNeedReconnection() const;
+
+    void setSocketStatus( NetWordThreadStatus status );
+    NetWordThreadStatus getSocketStatus();
+
+    void reconnectionVerify();
+    void reconnectionSucceeful();
+
+    void setClearMsgIDHandler( LUA_FUNCTION nHandler );
+}
+
+class CHttpDownloader: public CCObject
+{
+    static CHttpDownloader* sharedHttpDownloader();
+    static void purgeSharedHttpDownloader();
+    void getContent( const char* sUrl, int nTag );
+    void saveToFile( const char* sUrl, const char* sSaveTo, int nTag );
+    void register_callback( LUA_FUNCTION handler );
+    void register_progress_callback( LUA_FUNCTION handler );
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+enum HTTP_REQUEST_TYPE
+{
+    HTTP_REQUEST_TYPE_MSG,
+    HTTP_REQUEST_TYPE_FILE,
+};
+
+class HttpRequest
+{
+    int getRequestType();
+    bool getAppendToRecv();
+
+    void set_opt( CURL* curl );
+};
+
+class HttpRequestMsg : HttpRequest
+{
+    void setRecvBuffer( const char* szRevcBuf = NULL, unsigned int nLength = 0 );
+    void setSendBuffer( const char* szSendBuf = NULL, unsigned int nLength = 0 );
+};
+
+class HttpRequestFile : HttpRequest
+{
+};
+
+class TLHttpClient
+{
+    static TLHttpClient* sharedHttpClient();
+
+    // 添加到请求队列，等待发送给服务器
+    void sendMsg( int nMsgID, LUA_FUNCTION nCallbackHandler, const std::string& strURLPrefix, const std::string& strContentType = "", const char* pszMsgData = NULL, int nLength = 0 );
+
+    // 添加到请求队列，等待发送给服务器，这里是请求下载一个文件
+    void requestFile( const char* szRequestURL, const char* szSaveTo, LUA_FUNCTION nCallbackHandler );
+
+    void appendRequestToSend( HttpRequest* pRequest );
+    // multi curl 线程通过调用这个函数，从请求队列提取一个请求，进行处理
+    HttpRequest* getSendRequest();
+
+    // 这里不是发送，而是服务器返回后，添加到待处理队列，等待主线程处理
+	void appendRequestToRecv( int nRequestType, int nMsgID, LUA_FUNCTION nCallbackHandler, const char* szContent, int nLength );
+
+    void setDefaultURL( const std::string& strDefaultURL );
+    const std::string& getDefaultURL() const;
+
+    void setCookiePath( const std::string& strCookiePath );
+    const std::string& getCookiePath() const;
+
+    void setPlaybackScriptHandler( LUA_FUNCTION nHandler );
+
+    void setResetHttpClient();
+};

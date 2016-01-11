@@ -1,0 +1,57 @@
+#import "SDKLoginUtilsForIOS+<%= name.upcase %>.h"
+
+@implementation SDKLoginUtilsForIOS (SDKLoginUtilsForIOS_<%= name.upcase %>)
+
+#pragma mark -
+#pragma mark YunyueSDKIntegrateDelegate
+
+// {{{ Optional
+
++ (void)didFinishLaunchingWithOptions:(NSDictionary *)launchOptions rootViewController:(UIViewController *)rootViewController {
+    NSLog(@">>> SDK_APP_ID: %d", [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"SDK_APP_ID"] intValue]);
+    NSLog(@">>> SDK_APP_KEY: %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SDK_APP_KEY"]);
+    // [[XXX_SDK sharedInstance] setDelegate:[SDKLoginUtilsForIOS class]];
+}
+
++ (void)login: (NSDictionary *)payload {
+    // show login
+}
+
++ (void)logout: (NSDictionary *)payload {
+    // logout
+}
+
++ (void)purchase: (NSDictionary *)payload {
+    NSLog(@">>> purchase: %@\n", payload);
+    // open payment interface
+}
+
++ (void)platform: (NSDictionary *)payload {
+    // open user center
+}
+
+// + (BOOL)openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+//     return YES;
+// }
+
+// }}}
+
+#pragma mark -
+#pragma mark For SDK
+
++ (void)loginCallback:(NSString *)token {
+    NSLog(@"登陆的回调 - %@", token);
+
+    NSDictionary *payload = @{@"sessionId":  token, @"userId": @""};
+    NSData *data = [NSJSONSerialization dataWithJSONObject:payload options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+
+    platform_callback(CB_LOGIN_SUCCESS, [json UTF8String]);
+}
+
++ (void)logoutCallback {
+    NSLog(@"注销的回掉");
+    platform_callback(CB_LOGOUT_SUCCESS, "");
+}
+
+@end

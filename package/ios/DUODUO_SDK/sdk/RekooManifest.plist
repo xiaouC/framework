@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>appid</key>
+	<string>3012</string>
+	<key>channel</key>
+	<string>duoduo</string>
+	<key>plat</key>
+	<string>63</string>
+	<key>rekoogid</key>
+	<string>20098</string>
+	<key>appkey</key>
+	<string>9be32680c32532625e97e479b501db48</string>
+	<key>gameKey</key>
+	<string>DUODUO_FXXXR</string>
+</dict>
+</plist>

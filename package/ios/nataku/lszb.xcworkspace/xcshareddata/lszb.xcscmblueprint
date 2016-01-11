@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "335FF77FAB53BA667E86DA8A1E430D6722DF6021",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "216A6101EBA0BA4884ED85101CF1FE98684CC710" : 0,
+    "335FF77FAB53BA667E86DA8A1E430D6722DF6021" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "3DCC4C5E-2E94-4A4E-89FA-AD4096B6F5E4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "216A6101EBA0BA4884ED85101CF1FE98684CC710" : "framework\/package\/ios\/PP_SDK_iOS",
+    "335FF77FAB53BA667E86DA8A1E430D6722DF6021" : "framework"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "lszb",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "package\/ios\/nataku\/lszb.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "192.168.0.252:ratazzi\/PP_SDK_iOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "216A6101EBA0BA4884ED85101CF1FE98684CC710"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "192.168.0.252:lol\/framework.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "335FF77FAB53BA667E86DA8A1E430D6722DF6021"
+    }
+  ]
+}

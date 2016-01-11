@@ -1,0 +1,17 @@
+$#include "Common/TimeLine.h"
+
+class TLTimeLineManager : public CCObject
+{
+	static TLTimeLineManager* SharedTLTimeLineManager();
+
+	void SetTimeLineEndFunc( int nTimeLineID, LUA_FUNCTION nLuaHandle, float fTime = 0.0f );
+	bool AddTimeEvent( int nTimeLineID, float fTime, LUA_FUNCTION nLuaHandle, int nUserData1 = -1, int nUserData2 = -1 );
+
+public:
+	int CreateTimeLine();						// 创建
+	void CloseTimeLine( int nTimeLineID );		// 关闭
+	bool StartUpTimeLine( int nTimeLineID );	// 启动
+	bool PauseTimeLine( int nTimeLineID );		// 暂停
+	bool ContinueTimeLine( int nTimeLineID );	// 
+	bool StopTimeLine( int nTimeLineID );		// 停止
+};

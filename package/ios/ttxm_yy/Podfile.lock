@@ -1,0 +1,25 @@
+PODS:
+  - assets (1.00003)
+  - lua (5.1.5)
+  - OpenUDID (HEAD based on 1.0.0)
+  - Reachability (3.1.1)
+
+DEPENDENCIES:
+  - assets (from `assets`)
+  - lua (from `../../../cocos2d-x-2.1.5/scripting/lua/lua`)
+  - OpenUDID (HEAD)
+  - Reachability (~> 3.1.1)
+
+EXTERNAL SOURCES:
+  assets:
+    :path: assets
+  lua:
+    :path: "../../../cocos2d-x-2.1.5/scripting/lua/lua"
+
+SPEC CHECKSUMS:
+  assets: 02a4e59a78cbdf8ee6e9beab92124ccf983263b9
+  lua: 18d50f88542b7e226b14a36b205176c82f2a9d67
+  OpenUDID: e7cb6984c7304906ad20f3a36bf087b025896b6b
+  Reachability: dd9aa4fb6667b9f787690a74f53cb7634ce99893
+
+COCOAPODS: 0.39.0

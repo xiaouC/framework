@@ -1,0 +1,59 @@
+import os
+
+pbc = SConscript( 'src2.1.3/pbc/SConscript' )
+
+env = Environment(
+        CCFLAGS=['-Wall', '-g3', '-pg', '-fpermissive'],
+        CPPPATH = [ 'src2.1.3/pbc',
+                    'src2.1.3/Common/../',
+                    'protocol/src/',
+                    'protocol/src/config',
+                    'protobuf-2.4.1/src',
+                    'cocos2d-x-2.1.5/cocos2dx',
+                    'cocos2d-x-2.1.5/cocos2dx/include',
+                    'cocos2d-x-2.1.5/cocos2dx/support',
+                    'cocos2d-x-2.1.5/cocos2dx/platform',
+                    'cocos2d-x-2.1.5/cocos2dx/platform/third_party/linux/include64',
+                    'cocos2d-x-2.1.5/cocos2dx/platform/linux',
+                    'cocos2d-x-2.1.5/cocos2dx/kazmath/include',
+                    'cocos2d-x-2.1.5/CocosDenshion/include',
+                    'cocos2d-x-2.1.5/scripting/lua/cocos2dx_support',
+                    'cocos2d-x-2.1.5/scripting/lua/lua',
+                    'cocos2d-x-2.1.5/scripting/lua/tolua',
+                    'cocos2d-x-2.1.5/external/chipmunk/include',
+                  ],
+        LIBPATH = [ 'cocos2d-x-2.1.5/lib/linux/debug',
+                    'cocos2d-x-2.1.5/cocos2dx/platform/third_party/linux/libraries/lib64',
+                    'cocos2d-x-2.1.5/CocosDenshion/third_party/fmod/lib64/api/lib',
+                    'cocos2d-x-2.1.5/cocos2dx/proj.linux',
+                  ],
+        LIBS = [ 'lua',
+                 'cocosdenshion',
+                 'cocos2dx',
+                 'protobuf-lite',
+                 'curl',
+                 'fmodex64',
+                 'glfw',
+                 'GLEW',
+                 'GL',
+                 'rt',
+                 'z',
+                 'freetype',
+                 'jpeg',
+                 'png',
+                 'fontconfig',
+                 'ldap',
+                 'rtmp',
+                 'idn',
+                 'tiff',
+                 'webp',
+                 pbc,
+               ],
+    CPPDEFINES = [('COCOS2D_DEBUG', 2), 'LUA_DEBUG', 'LINUX', 'CC_UNDER_LINUX', 'RENDER_WITH_OPEN_GL', 'DEBUG'
+                 #, 'PACK_RESOURCE'
+                 ],
+)
+
+sources = Glob( 'src2.1.3/*.cpp' ) + Glob('src2.1.3/*/*.cpp') + Glob('src2.1.3/*/*/*.cpp') + Glob( 'protocol/src/*.cc' ) + Glob( 'protocol/src/config/*.cc' ) + Glob( 'src2.1.3/toluaAPI/*.c' )
+
+env.Program( 'main', sources )

@@ -1,0 +1,24 @@
+$#include "toluaui/TLMaskLayer.h"
+
+class TLMaskLayer : public CCLayer
+{
+	static TLMaskLayer* sharedTLMaskLayer();
+
+	void resetMaskLayer();
+
+	void setIsClickTest( bool clickTest );
+	void setIsMaskScene( bool bMaskScene );
+
+	void setIsClickToContinue( bool clickToContinue );
+	void appendHighlightRect( const CCRect& rect, const ccColor4B& color = ccc4f( 0x00, 0x00, 0x00, 0x01 ) );
+
+	void renderMaskSprite( float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 0.8f );
+	
+	// hit test
+	void setHitTestEnable( bool bHitTestEnable );
+
+	void resetHitTest();
+
+	void appendHitTestRect( const CCRect& rect );
+	void setHitTestFuncCallback( LUA_FUNCTION nLuaHandle );
+};

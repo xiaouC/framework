@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\Drama\DramaData.cpp" />
+    <ClCompile Include="src\Drama\DramaHeimu.cpp" />
+    <ClCompile Include="src\Drama\DramaRole.cpp" />
+    <ClCompile Include="src\Drama\DramaSay.cpp" />
+    <ClCompile Include="src\Drama\DramaScene.cpp" />
+    <ClCompile Include="src\Drama\XLDrama.cpp" />
+    <ClCompile Include="src\MC\AssetsManager.cpp" />
+    <ClCompile Include="src\MC\ClipNode.cpp" />
+    <ClCompile Include="src\MC\MCFrame.cpp" />
+    <ClCompile Include="src\MC\MCLoader.cpp" />
+    <ClCompile Include="src\MC\MCNode.cpp" />
+    <ClCompile Include="src\MC\MovieClip.cpp" />
+    <ClCompile Include="src\MC\RoleMC.cpp" />
+    <ClCompile Include="src\MoveObject\TLMoveObject.cpp" />
+    <ClCompile Include="src\NetMessage\HttpDownloader.cpp" />
+    <ClCompile Include="src\NetMessage\NetMsg.cpp" />
+    <ClCompile Include="src\NetMessage\NetMsgProcess.cpp" />
+    <ClCompile Include="src\NetMessage\NetWorkThread.cpp" />
+    <ClCompile Include="src\platform\PlatformUtils.cpp" />
+    <ClCompile Include="src\toluaui\TLDropDragHelper.cpp" />
+    <ClCompile Include="src\toluaui\TLLuaEngine.cpp" />
+    <ClCompile Include="src\toluaui\TLMaskLayer.cpp" />
+    <ClCompile Include="src\toluaui\TLTextFieldDelegate.cpp" />
+    <ClCompile Include="src\toluaui\TLWindow.cpp" />
+    <ClCompile Include="src\toluaui\TLWindowManager.cpp" />
+    <ClCompile Include="src\UI\LuaCallFunc.cpp" />
+    <ClCompile Include="src\AppDelegate.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\TLRunningScene.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCDrawingPrimitivesExt.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCLabelTexFont.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCLabelTTFEdge.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCTexFontConfig.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCTexFontVerbatim.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCTextFieldTexFont.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCTextFieldTTFCorsor.cpp" />
+    <ClCompile Include="src\cocos2Dext\utf8.cpp" />
+    <ClCompile Include="src\Common\AutoLock.cpp" />
+    <ClCompile Include="src\Common\Common.cpp" />
+    <ClCompile Include="src\Common\EventTrigger.cpp" />
+    <ClCompile Include="src\Common\LuaCallback.cpp" />
+    <ClCompile Include="src\Common\LuaLoader.cpp" />
+    <ClCompile Include="src\Common\TimeLine.cpp" />
+    <ClCompile Include="src\Common\XLParserText.cpp" />
+    <ClCompile Include="src\Common\XLTimer.cpp" />
+    <ClCompile Include="luaapi\pbc-lua.cpp" />
+    <ClCompile Include="luaapi\utils.cpp" />
+    <ClCompile Include="luaapi\bit.c" />
+    <ClCompile Include="luaapi\luaapi.cpp" />
+    <ClCompile Include="cocos2dx\lua\cocos2dx_support\CCLuaEngine.cpp">
+      <Filter>cocos2dx_support</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos2dx\lua\cocos2dx_support\LuaCocos2d.cpp">
+      <Filter>cocos2dx_support</Filter>
+    </ClCompile>
+    <ClCompile Include="cocos2dx\lua\cocos2dx_support\tolua_fix.c">
+      <Filter>cocos2dx_support</Filter>
+    </ClCompile>
+    <ClCompile Include="luaapi\lfs.c" />
+    <ClCompile Include="luaapi\struct.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Drama\DramaData.h" />
+    <ClInclude Include="src\Drama\DramaHeimu.h" />
+    <ClInclude Include="src\Drama\DramaRole.h" />
+    <ClInclude Include="src\Drama\DramaSay.h" />
+    <ClInclude Include="src\Drama\DramaScene.h" />
+    <ClInclude Include="src\Drama\XLDrama.h" />
+    <ClInclude Include="src\MC\AssetsManager.h" />
+    <ClInclude Include="src\MC\ClipNode.h" />
+    <ClInclude Include="src\MC\LuaEngine.h" />
+    <ClInclude Include="src\MC\MCBuildContext.h" />
+    <ClInclude Include="src\MC\MCFrame.h" />
+    <ClInclude Include="src\MC\MCLoader.h" />
+    <ClInclude Include="src\MC\MCNode.h" />
+    <ClInclude Include="src\MC\MovieClip.h" />
+    <ClInclude Include="src\MC\RoleMC.h" />
+    <ClInclude Include="src\MoveObject\TLMoveObject.h" />
+    <ClInclude Include="src\NetMessage\HttpDownloader.h" />
+    <ClInclude Include="src\NetMessage\NetMsg.h" />
+    <ClInclude Include="src\NetMessage\NetMsgProcess.h" />
+    <ClInclude Include="src\NetMessage\NetWorkThread.h" />
+    <ClInclude Include="src\platform\PlatformUtils.h" />
+    <ClInclude Include="src\platform\sdk.h" />
+    <ClInclude Include="src\toluaui\TLDropDragHelper.h" />
+    <ClInclude Include="src\toluaui\TLLuaEngine.h" />
+    <ClInclude Include="src\toluaui\TLMaskLayer.h" />
+    <ClInclude Include="src\toluaui\TLTextFieldDelegate.h" />
+    <ClInclude Include="src\toluaui\TLWindow.h" />
+    <ClInclude Include="src\toluaui\TLWindowDefine.h" />
+    <ClInclude Include="src\toluaui\TLWindowInline.h" />
+    <ClInclude Include="src\toluaui\TLWindowManager.h" />
+    <ClInclude Include="src\UI\LuaCallFunc.h" />
+    <ClInclude Include="src\AppDelegate.h" />
+    <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\TLRunningScene.h" />
+    <ClInclude Include="src\cocos2Dext\CCDrawingPrimitivesExt.h" />
+    <ClInclude Include="src\cocos2Dext\CCLabelTexFont.h" />
+    <ClInclude Include="src\cocos2Dext\CCLabelTTFEdge.h" />
+    <ClInclude Include="src\cocos2Dext\CCTexFontConfig.h" />
+    <ClInclude Include="src\cocos2Dext\CCTexFontVerbatim.h" />
+    <ClInclude Include="src\cocos2Dext\CCTextFieldTexFont.h" />
+    <ClInclude Include="src\cocos2Dext\CCTextFieldTTFCorsor.h" />
+    <ClInclude Include="src\cocos2Dext\cocos2Dext.h" />
+    <ClInclude Include="src\cocos2Dext\utf8.h" />
+    <ClInclude Include="src\Common\AutoLock.h" />
+    <ClInclude Include="src\Common\Common.h" />
+    <ClInclude Include="src\Common\EventTrigger.h" />
+    <ClInclude Include="src\Common\LuaApi.h" />
+    <ClInclude Include="src\Common\LuaCallback.h" />
+    <ClInclude Include="src\Common\TimeLine.h" />
+    <ClInclude Include="src\Common\XLParserText.h" />
+    <ClInclude Include="src\Common\XLTimer.h" />
+    <ClInclude Include="cocos2dx\lua\cocos2dx_support\CCLuaEngine.h">
+      <Filter>cocos2dx_support</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos2dx\lua\cocos2dx_support\LuaCocos2d.h">
+      <Filter>cocos2dx_support</Filter>
+    </ClInclude>
+    <ClInclude Include="cocos2dx\lua\cocos2dx_support\tolua_fix.h">
+      <Filter>cocos2dx_support</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="cocos2dx_support">
+      <UniqueIdentifier>{8867c3a2-02ad-438b-8d4f-d07d92ce77a5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

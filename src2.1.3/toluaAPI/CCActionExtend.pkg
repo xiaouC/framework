@@ -1,0 +1,8 @@
+$#include "Common/CCActionExtend.h"
+
+$using namespace cocos2d;
+
+class CCActionLuaCallFunc : public CCActionInstant
+{
+    static CCActionLuaCallFunc* create( LUA_FUNCTION nHandler );
+}

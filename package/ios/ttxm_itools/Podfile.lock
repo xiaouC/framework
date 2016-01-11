@@ -1,0 +1,25 @@
+PODS:
+  - assets (1.00003)
+  - OP_iTools_SDK (2.0.4)
+  - OpenUDID (HEAD based on 1.0.0)
+  - UMengAnalytics (2.2.1)
+
+DEPENDENCIES:
+  - assets (from `assets`)
+  - OP_iTools_SDK (from `../OP_iTools_SDK`)
+  - OpenUDID (HEAD)
+  - UMengAnalytics (~> 2.2.1)
+
+EXTERNAL SOURCES:
+  assets:
+    :path: assets
+  OP_iTools_SDK:
+    :path: ../OP_iTools_SDK
+
+SPEC CHECKSUMS:
+  assets: 2bc963e22b83635ec28825e48f34bc444eb075f0
+  OP_iTools_SDK: 10dd26ebe0109195ffcdef0fb0907de99ee16a20
+  OpenUDID: 04a7c560c47869bc5194820e3b529d4504cc0296
+  UMengAnalytics: ce494e736260640957348d00eb0f41aa02167662
+
+COCOAPODS: 0.32.1

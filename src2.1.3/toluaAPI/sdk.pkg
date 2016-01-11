@@ -1,0 +1,8 @@
+$#include "platform/sdk.h"
+
+void OpenPlatformLogin();
+void OpenPlatformLoginout();
+void OpenPayInterface(char* szSerialNo, float money);
+void EnterPlatform();
+int GetSdkType();
+void payWithAndroidSDK(char *orderID, char *serverID, char *roleID, char *roleName, char *roleLevel, char *loginName, char *pbID );

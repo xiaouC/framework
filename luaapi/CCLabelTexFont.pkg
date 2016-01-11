@@ -1,0 +1,56 @@
+$#include "cocos2Dext/CCLabelTexFont.h"
+$using namespace cocos2d;
+
+class CCImage
+{
+    typedef enum
+    {
+        kAlignCenter        = 0x33, ///< Horizontal center and vertical center.
+        kAlignTop           = 0x13, ///< Horizontal center and vertical top.
+        kAlignTopRight      = 0x12, ///< Horizontal right and vertical top.
+        kAlignRight         = 0x32, ///< Horizontal right and vertical center.
+        kAlignBottomRight   = 0x22, ///< Horizontal right and vertical bottom.
+        kAlignBottom        = 0x23, ///< Horizontal center and vertical bottom.
+        kAlignBottomLeft    = 0x21, ///< Horizontal left and vertical bottom.
+        kAlignLeft          = 0x31, ///< Horizontal left and vertical center.
+        kAlignTopLeft       = 0x11, ///< Horizontal left and vertical top.
+    }ETextAlign;
+}
+
+class CCLabelTexFont : public CCNode
+{
+	static CCLabelTexFont* labelWithString( const char *str, float fFontSize, const CCSize& dimensions = CCSizeZero, CCImage::ETextAlign alignment = CCImage::kAlignLeft);
+	bool initWithString( const char *str, float fFontSize, const CCSize& dimensions = CCSizeZero, CCImage::ETextAlign alignment = CCImage::kAlignLeft );
+
+	virtual void setString( const char *text );
+	virtual const char* getString();
+	virtual void setContentSize( const CCSize& size );
+	
+	virtual void setColor( const ccColor3B& color);
+	virtual	void setColor( const unsigned int& color);
+	virtual const ccColor3B& getColor();
+	virtual GLubyte getOpacity(void);
+	virtual void setOpacity(GLubyte opacity);
+	virtual void setIsOpacityModifyRGB(bool bValue);
+	virtual bool getIsOpacityModifyRGB(void);
+
+	virtual const CCSize& getRealFontSize();
+	virtual CCSprite* getChildByTag( int nTag );
+	virtual int getFontCount();
+
+	virtual void setRichString( const char* text, bool bOneLine = false );
+	virtual const char* getRichString();
+
+	virtual const CCSize& getRealSize();
+
+	virtual void setAlignment(CCImage::ETextAlign eAlignment);
+	virtual CCImage::ETextAlign getAlignment();
+
+	virtual void appendRich( const char* text );
+	virtual void append( const char* text );
+
+	virtual void setAlignmentInside(CCImage::ETextAlign eAlignment);
+	virtual CCImage::ETextAlign getAlignmentInside();
+
+	virtual void setFontSize( float size );
+};

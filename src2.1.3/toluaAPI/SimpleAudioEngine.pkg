@@ -1,0 +1,7 @@
+$#include "SimpleAudioEngine.h"
+$using namespace CocosDenshion;
+
+class SimpleAudioEngine
+{
+    void stopAllEffects();
+};

@@ -1,0 +1,56 @@
+PODS:
+  - assets (1.00003)
+  - ChartboostSDK (5.1.3)
+  - lua (5.1.5)
+  - MBProgressHUD (0.9.1)
+  - OpenUDID (HEAD based on 1.0.0)
+  - Reachability (3.1.1)
+  - SSKeychain (1.2.2)
+  - TalkingDataAppCpa (2.2.38)
+  - Yunyue (1.0.2):
+    - SSKeychain
+  - ZCPaySDK (1.0.0)
+
+DEPENDENCIES:
+  - assets (from `assets`)
+  - ChartboostSDK (from `../ChartboostSDK`)
+  - lua (from `../../../cocos2d-x-2.1.5/scripting/lua/lua`)
+  - MBProgressHUD (~> 0.8)
+  - OpenUDID (HEAD)
+  - Reachability (~> 3.1.1)
+  - TalkingDataAppCpa (from `../TalkingDataAppCpa`)
+  - Yunyue (from `git@192.168.0.252:ratazzi/yunyue-framework.git`)
+  - ZCPaySDK (from `../ZCPaySDK`)
+
+EXTERNAL SOURCES:
+  assets:
+    :path: assets
+  ChartboostSDK:
+    :path: ../ChartboostSDK
+  lua:
+    :path: ../../../cocos2d-x-2.1.5/scripting/lua/lua
+  TalkingDataAppCpa:
+    :path: ../TalkingDataAppCpa
+  Yunyue:
+    :git: git@192.168.0.252:ratazzi/yunyue-framework.git
+  ZCPaySDK:
+    :path: ../ZCPaySDK
+
+CHECKOUT OPTIONS:
+  Yunyue:
+    :commit: daa3c7ad8ab821ef39cecfd258ae1784c571af38
+    :git: git@192.168.0.252:ratazzi/yunyue-framework.git
+
+SPEC CHECKSUMS:
+  assets: 02a4e59a78cbdf8ee6e9beab92124ccf983263b9
+  ChartboostSDK: 008da10dbe10f214022fddb93b2ca550ffc4ffe2
+  lua: 18d50f88542b7e226b14a36b205176c82f2a9d67
+  MBProgressHUD: f3747dcbd45a9e855a6b0674550651e0b7ed250c
+  OpenUDID: 5a23b7477755efc2d7871b57aa79ba3089c40b74
+  Reachability: 8e9635e3cb4f98e7f825e51147f677ecc694d0e7
+  SSKeychain: cc48bd3ad24fcd9125adb9e0d23dd50b8bbd08b9
+  TalkingDataAppCpa: 32aabf7d32034365d2eca0e3616ffc54a749b924
+  Yunyue: 5591a9f976dbcce4e9a8260a1305e45d11915238
+  ZCPaySDK: acda987491ffda2a9e0e64eba3accb8b8eed6173
+
+COCOAPODS: 0.37.1

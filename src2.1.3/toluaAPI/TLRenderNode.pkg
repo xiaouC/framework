@@ -1,0 +1,22 @@
+$#include "UI/TLRenderNode.h"
+
+class TLRenderNode: public CCNodeRGBA
+{
+public:
+	static TLRenderNode* create( CCNode* pContentNode, float width, float height );
+	
+	void setUseRender(bool use);
+
+    virtual void setShaderProgramName(std::string shaderName);
+
+    void setBlendFunc(ccBlendFunc blendFunc);
+	
+    void visit(void);
+
+	void setCustomUniforms( float r, float g, float b, float a );
+
+	void setCustomUniformsEx( float r, float g, float b, float a );
+	
+	void setRenderSize(const CCSize & size);
+
+};

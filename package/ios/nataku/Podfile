@@ -1,0 +1,113 @@
+# Uncomment this line to define a global platform for your project
+# platform :ios, "7.0"
+
+source 'git://github.com/CocoaPods/Specs.git'
+
+inhibit_all_warnings!
+
+def import_pods
+  pod 'OpenUDID', :head
+  pod 'assets', :path => 'assets'
+  pod 'Reachability', '~> 3.1.1'
+  # pod 'Fabric'
+  # pod 'Crashlytics'
+end
+
+target :app do
+  platform :ios, "7.0"
+  import_pods
+  pod 'MBProgressHUD', '~> 0.8'
+  pod 'ChartboostSDK', :path => '../ChartboostSDK'
+  pod 'lua', :path => '../../../cocos2d-x-2.1.5/scripting/lua/lua'
+  # pod 'Yunyue', :git => 'git@192.168.0.252:ratazzi/yunyue-framework.git'
+  pod 'TalkingDataAppCpa', :path => '../TalkingDataAppCpa'
+end
+
+target :as do
+  platform :ios, "6.0"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'AS_SDK', :path => '../AS_SDK'
+end
+
+target :hm do
+  platform :ios, "7.0"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'ZHPaySDK', :path => '../ZHPaySDK'
+end
+
+target :iiapple do
+  platform :ios, "5.0"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'iiappleSDK', :path => '../iiappleSDK'
+end
+
+target :itools do
+  platform :ios, "5.0"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'ITOOLS_SDK', :path => '../ITOOLS_SDK'
+end
+
+target :ky do
+  platform :ios, "6.0.1"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'KY_SDK', :path => '../KY_SDK'
+end
+
+target :pp do
+  platform :ios, "6.0"
+  import_pods
+  pod 'lua', :path => '../../../cocos2d-x-2.1.5/scripting/lua/lua'
+  # pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'SBJson', '~> 3.2'
+  pod 'PP_SDK_iOS', :path => '../PP_SDK_iOS'
+end
+
+target :tb do
+  platform :ios, "6.0"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'TB_SDK', :path => '../TB_SDK'
+end
+
+target :xy do
+  platform :ios, "5.0"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'XY_SDK', :path => '../XY_SDK'
+end
+
+target :duoduo do
+  platform :ios, "5.0"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+end
+
+target :xx do
+  platform :ios, "6.0"
+  import_pods
+  pod 'luajit', :path => '../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios'
+  pod 'XX_SDK', :path => '../XX_SDK'
+end
+
+post_install do |installer|
+  excludes = {
+    'Pods-duoduo-Reachability' => %w(Reachability.m),
+    'Pods-duoduo-OpenUDID' => %w(OpenUDID.m),
+  }
+  puts excludes
+  installer.pods_project.targets.each do |target|
+    next unless excludes.include?(target.to_s)
+    source_files = target.source_build_phase.files
+    source_files.each do |file|
+      file.remove_from_project if excludes[target.to_s].include?(file.display_name)
+      puts "Deleting source file #{file.display_name} from target #{target.to_s}." if excludes[target.to_s].include?(file.display_name)
+    end
+  end
+end
+
+# vim: set ft=ruby:

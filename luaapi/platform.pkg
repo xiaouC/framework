@@ -1,0 +1,28 @@
+$#include "platform/PlatformUtils.h"
+
+//void showLoading(const char* sMsg=0);
+//void hideLoading();
+//bool isLoadingShowing();
+void quitConfirm();
+bool isETC1Supported();
+
+const char* getDeviceId();
+const char* getUUID();
+const char* getPlatform();
+const char* getOSVersion();
+const char* getResolution();
+const char* getUA();
+const char* getMetaData(const char*);
+
+bool acquireWakeLock();
+bool releaseWakeLock();
+bool userActivity();
+
+int getPackageVersion();
+const char* getPackageName();
+const char* getNetworkType();
+
+void openURL(const char* sUrl);
+
+void receiptCallback(const char* transaction_id);
+void resendReceiptsValidation();

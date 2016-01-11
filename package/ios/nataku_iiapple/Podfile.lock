@@ -1,0 +1,30 @@
+PODS:
+  - assets (1.00003)
+  - iiappleSDK (1.7)
+  - luajit (2.0.1)
+  - OpenUDID (HEAD based on 1.0.0)
+  - Reachability (3.1.1)
+
+DEPENDENCIES:
+  - assets (from `assets`)
+  - iiappleSDK (from `../iiappleSDK`)
+  - luajit (from `../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios`)
+  - OpenUDID (HEAD)
+  - Reachability (~> 3.1.1)
+
+EXTERNAL SOURCES:
+  assets:
+    :path: assets
+  iiappleSDK:
+    :path: "../iiappleSDK"
+  luajit:
+    :path: "../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios"
+
+SPEC CHECKSUMS:
+  assets: 02a4e59a78cbdf8ee6e9beab92124ccf983263b9
+  iiappleSDK: e1dac25dac9ec8b6f5af38c48ba329c6a20e7214
+  luajit: d33c4394a0df4edf6eb453ca6b78062f48836b19
+  OpenUDID: 5a23b7477755efc2d7871b57aa79ba3089c40b74
+  Reachability: 8e9635e3cb4f98e7f825e51147f677ecc694d0e7
+
+COCOAPODS: 0.36.3

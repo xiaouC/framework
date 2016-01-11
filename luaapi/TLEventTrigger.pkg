@@ -1,0 +1,72 @@
+$#include "Common/EventTrigger.h"
+$#include "Common/XLTimer.h"
+
+enum EVENT_TYPE
+{
+	EVENT_TYPE_INVALID = -1,
+
+	// player
+	EVENT_TYPE_PLAYER_MAX_HP,				// 最大生命值
+	EVENT_TYPE_PLAYER_MAX_MP,
+	EVENT_TYPE_PLAYER_CURRENT_HP,
+	EVENT_TYPE_PLAYER_LEVEL,					// 等级
+	EVENT_TYPE_PLAYER_FORCE,				// 武力
+	EVENT_TYPE_PLAYER_STUNT,				// 绝技
+	EVENT_TYPE_PLAYER_SKILL,				// 战法
+	EVENT_TYPE_PLAYER_INTELLECT,			// 法术
+	EVENT_TYPE_PLAYER_VIPST,				// VIP 强化次数
+	EVENT_TYPE_PLAYER_GOLD,					// 金币
+	EVENT_TYPE_PLAYER_MONEY,				// 银币
+	EVENT_TYPE_PLAYER_SP,					// 将令
+	EVENT_TYPE_PLAYER_PURPLE_COIN,			// 紫币
+	EVENT_TYPE_PLAYER_BLUE_COIN,			// 蓝币
+	EVENT_TYPE_PLAYER_REFRESH_RECRUITMENT,	// 伙伴招募的刷新次数
+	EVENT_TYPE_PLAYER_FREE_ROLL,			// 免费 roll 点次数
+	EVENT_TYPE_PLAYER_COST_ROLL,			// 付费 roll 点次数
+    // 竞技场
+	EVENT_TYPE_PLAYER_RANK,			        // 排名
+	EVENT_TYPE_PLAYER_HORNOR,			    // 声望
+    EVENT_TYPE_PLAYER_CHALLENGE_COUNT,      // 剩余挑战次数
+    EVENT_TYPE_PLAYER_RANK_DC,              // 竞技场战斗DC
+
+	// pet
+	EVENT_TYPE_PET_MAX_HP,					// 最大生命值
+	EVENT_TYPE_PET_MAX_MP,
+	EVENT_TYPE_PET_CURRENT_HP,
+	EVENT_TYPE_PET_LEVEL,					// 等级
+	EVENT_TYPE_PET_FORCE,					// 武力
+	EVENT_TYPE_PET_STUNT,					// 绝技
+	EVENT_TYPE_PET_SKILL,					// 战法
+	EVENT_TYPE_PET_INTELLECT,				// 法术
+	EVENT_TYPE_PET_COUNT,					// 伙伴数量
+
+	// 
+	EVENT_TYPE_CHANGE_SCENE_BEGIN,			// 切换场景
+	EVENT_TYPE_CHANGE_SCENE_END,			// 切换场景
+	
+	// task
+	EVENT_TYPE_TRACE_TASK_STATUS_CHANGED,	// 当前追踪的任务改变了
+	
+	// 
+	EVENT_TYPE_REMOVE_UNUSED_TEXTURE,		// 清理一次没有使用了的贴图
+	
+	EVENT_TYPE_MAX,
+};
+
+class TLEventTrigger : public CCObject
+{
+	static TLEventTrigger* SharedTLEventTrigger();
+    void PurgeLuaHandlers();
+
+	bool RegisterEventCallback( int nRegisterID, EVENT_TYPE kEventType, LUA_FUNCTION nLuaHandle );
+	void UnregisterEventCallback( int nRegisterID, EVENT_TYPE kEventType );
+	void SetEvent( EVENT_TYPE kEventType, unsigned int uiParam1 = 0xFFFFFFFF, unsigned int uiParam2 = 0xFFFFFFFF );
+
+	int GetRegisterID();
+};
+
+class XLTimer : public CCObject
+{
+	static XLTimer* SharedXLTimer();
+	float GetWorldTime();
+};

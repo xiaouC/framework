@@ -1,0 +1,30 @@
+PODS:
+  - AS_SDK (1.7)
+  - assets (1.00003)
+  - luajit (2.0.1)
+  - OpenUDID (HEAD based on 1.0.0)
+  - Reachability (3.2)
+
+DEPENDENCIES:
+  - AS_SDK (from `../AS_SDK`)
+  - assets (from `assets`)
+  - luajit (from `../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios`)
+  - OpenUDID (HEAD)
+  - Reachability (~> 3.2)
+
+EXTERNAL SOURCES:
+  AS_SDK:
+    :path: "../AS_SDK"
+  assets:
+    :path: assets
+  luajit:
+    :path: "../../../cocos2d-x-2.1.5/scripting/lua/luajit/ios"
+
+SPEC CHECKSUMS:
+  AS_SDK: 8c60cc1e79eaa33d8e6376541dd7c55ffda423e6
+  assets: 02a4e59a78cbdf8ee6e9beab92124ccf983263b9
+  luajit: d33c4394a0df4edf6eb453ca6b78062f48836b19
+  OpenUDID: 5a23b7477755efc2d7871b57aa79ba3089c40b74
+  Reachability: 1ef8adf5c4e3d362f96515d4278f68dad3c26930
+
+COCOAPODS: 0.36.3

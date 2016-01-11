@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cocos2dx\lua\cocos2dx_support\CCLuaEngine.cpp" />
+    <ClCompile Include="cocos2dx\lua\cocos2dx_support\LuaCocos2d.cpp" />
+    <ClCompile Include="cocos2dx\lua\cocos2dx_support\tolua_fix.c" />
+    <ClCompile Include="luaapi\bit.c" />
+    <ClCompile Include="luaapi\lfs.c" />
+    <ClCompile Include="luaapi\luaapi.cpp" />
+    <ClCompile Include="luaapi\pbc-lua.cpp" />
+    <ClCompile Include="luaapi\struct.c" />
+    <ClCompile Include="luaapi\utils.cpp" />
+    <ClCompile Include="src\AppDelegate.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCDrawingPrimitivesExt.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCLabelTexFont.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCLabelTTFEdge.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCTexFontConfig.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCTexFontVerbatim.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCTextFieldTexFont.cpp" />
+    <ClCompile Include="src\cocos2Dext\CCTextFieldTTFCorsor.cpp" />
+    <ClCompile Include="src\cocos2Dext\utf8.cpp" />
+    <ClCompile Include="src\Common\AutoLock.cpp" />
+    <ClCompile Include="src\Common\Common.cpp" />
+    <ClCompile Include="src\Common\EventTrigger.cpp" />
+    <ClCompile Include="src\Common\LuaCallback.cpp" />
+    <ClCompile Include="src\Common\LuaLoader.cpp" />
+    <ClCompile Include="src\Common\TimeLine.cpp" />
+    <ClCompile Include="src\Common\XLParserText.cpp" />
+    <ClCompile Include="src\Common\XLTimer.cpp" />
+    <ClCompile Include="src\Drama\DramaData.cpp" />
+    <ClCompile Include="src\Drama\DramaHeimu.cpp" />
+    <ClCompile Include="src\Drama\DramaRole.cpp" />
+    <ClCompile Include="src\Drama\DramaSay.cpp" />
+    <ClCompile Include="src\Drama\DramaScene.cpp" />
+    <ClCompile Include="src\Drama\XLDrama.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MC\AssetsManager.cpp" />
+    <ClCompile Include="src\MC\ClipNode.cpp" />
+    <ClCompile Include="src\MC\MCFrame.cpp" />
+    <ClCompile Include="src\MC\MCLoader.cpp" />
+    <ClCompile Include="src\MC\MCNode.cpp" />
+    <ClCompile Include="src\MC\MovieClip.cpp" />
+    <ClCompile Include="src\MC\RoleMC.cpp" />
+    <ClCompile Include="src\MoveObject\TLMoveObject.cpp" />
+    <ClCompile Include="src\NetMessage\HttpDownloader.cpp" />
+    <ClCompile Include="src\NetMessage\NetMsg.cpp" />
+    <ClCompile Include="src\NetMessage\NetMsgProcess.cpp" />
+    <ClCompile Include="src\NetMessage\NetWorkThread.cpp" />
+    <ClCompile Include="src\platform\PlatformUtils.cpp" />
+    <ClCompile Include="src\TLRunningScene.cpp" />
+    <ClCompile Include="src\toluaui\TLDropDragHelper.cpp" />
+    <ClCompile Include="src\toluaui\TLLuaEngine.cpp" />
+    <ClCompile Include="src\toluaui\TLMaskLayer.cpp" />
+    <ClCompile Include="src\toluaui\TLTextFieldDelegate.cpp" />
+    <ClCompile Include="src\toluaui\TLWindow.cpp" />
+    <ClCompile Include="src\toluaui\TLWindowManager.cpp" />
+    <ClCompile Include="src\UI\LuaCallFunc.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cocos2dx\lua\cocos2dx_support\CCLuaEngine.h" />
+    <ClInclude Include="cocos2dx\lua\cocos2dx_support\LuaCocos2d.h" />
+    <ClInclude Include="cocos2dx\lua\cocos2dx_support\tolua_fix.h" />
+    <ClInclude Include="src\AppDelegate.h" />
+    <ClInclude Include="src\cocos2Dext\CCDrawingPrimitivesExt.h" />
+    <ClInclude Include="src\cocos2Dext\CCLabelTexFont.h" />
+    <ClInclude Include="src\cocos2Dext\CCLabelTTFEdge.h" />
+    <ClInclude Include="src\cocos2Dext\CCTexFontConfig.h" />
+    <ClInclude Include="src\cocos2Dext\CCTexFontVerbatim.h" />
+    <ClInclude Include="src\cocos2Dext\CCTextFieldTexFont.h" />
+    <ClInclude Include="src\cocos2Dext\CCTextFieldTTFCorsor.h" />
+    <ClInclude Include="src\cocos2Dext\cocos2Dext.h" />
+    <ClInclude Include="src\cocos2Dext\utf8.h" />
+    <ClInclude Include="src\Common\AutoLock.h" />
+    <ClInclude Include="src\Common\Common.h" />
+    <ClInclude Include="src\Common\EventTrigger.h" />
+    <ClInclude Include="src\Common\LuaApi.h" />
+    <ClInclude Include="src\Common\LuaCallback.h" />
+    <ClInclude Include="src\Common\TimeLine.h" />
+    <ClInclude Include="src\Common\XLParserText.h" />
+    <ClInclude Include="src\Common\XLTimer.h" />
+    <ClInclude Include="src\Drama\DramaData.h" />
+    <ClInclude Include="src\Drama\DramaHeimu.h" />
+    <ClInclude Include="src\Drama\DramaRole.h" />
+    <ClInclude Include="src\Drama\DramaSay.h" />
+    <ClInclude Include="src\Drama\DramaScene.h" />
+    <ClInclude Include="src\Drama\XLDrama.h" />
+    <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\MC\AssetsManager.h" />
+    <ClInclude Include="src\MC\ClipNode.h" />
+    <ClInclude Include="src\MC\LuaEngine.h" />
+    <ClInclude Include="src\MC\MCBuildContext.h" />
+    <ClInclude Include="src\MC\MCFrame.h" />
+    <ClInclude Include="src\MC\MCLoader.h" />
+    <ClInclude Include="src\MC\MCNode.h" />
+    <ClInclude Include="src\MC\MovieClip.h" />
+    <ClInclude Include="src\MC\RoleMC.h" />
+    <ClInclude Include="src\MoveObject\TLMoveObject.h" />
+    <ClInclude Include="src\NetMessage\HttpDownloader.h" />
+    <ClInclude Include="src\NetMessage\NetMsg.h" />
+    <ClInclude Include="src\NetMessage\NetMsgProcess.h" />
+    <ClInclude Include="src\NetMessage\NetWorkThread.h" />
+    <ClInclude Include="src\platform\PlatformUtils.h" />
+    <ClInclude Include="src\platform\sdk.h" />
+    <ClInclude Include="src\TLRunningScene.h" />
+    <ClInclude Include="src\toluaui\TLDropDragHelper.h" />
+    <ClInclude Include="src\toluaui\TLLuaEngine.h" />
+    <ClInclude Include="src\toluaui\TLMaskLayer.h" />
+    <ClInclude Include="src\toluaui\TLTextFieldDelegate.h" />
+    <ClInclude Include="src\toluaui\TLWindow.h" />
+    <ClInclude Include="src\toluaui\TLWindowDefine.h" />
+    <ClInclude Include="src\toluaui\TLWindowInline.h" />
+    <ClInclude Include="src\toluaui\TLWindowManager.h" />
+    <ClInclude Include="src\UI\LuaCallFunc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="protocol\ProtocolMsg.vcxproj">
+      <Project>{38bc8add-3e21-465f-9de0-7d4f1ca27582}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C731A9DE-4D2D-405A-8FD2-16B226A56626}</ProjectGuid>
+    <RootNamespace>poem</RootNamespace>
+    <ProjectName>poem</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\lib</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\protocol\src\config;.\protocol\src;.\src\cocos2dext;.\src\common;.\src\drama;.\src\mc;.\src\moveobject;.\src\netmessage;.\src\pbc;.\src\platform;.\src\toluaui;.\src\ui;.\src;.\cocos2dx\lua\cocos2dx_support;.\cocos2dx\lua\cocosdenshion_support;.\cocos2dx\lua\lua;.\cocos2dx\lua\tolua;.\cocos2dx\cocos2dx;.\cocos2dx\cocos2dx\include;.\cocos2dx\cocos2dx\platform;.\cocos2dx\cocos2dx\platform\third_party\win32;.\cocos2dx\cocos2dx\platform\third_party\win32\ogles;.\cocos2dx\cocos2dx\platform\third_party\win32\pthread;.\cocos2dx\cocos2dx\platform\third_party\win32\libxml2;.\cocos2dx\cocos2dx\platform\third_party\win32\iconv;.\cocos2dx\cocosdenshion\include;.\protobuf-2.4.1\vsprojects;.\protobuf-2.4.1\src;.\pbc</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRTDBG_MAP_ALLOC;COCOS2D_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcocos2d.lib;libgles_cm.lib;libxml2.lib;libpng.lib;libzlib.lib;libiconv.lib;libcurl_imp.lib;libCocosDenshion.lib;Dbghelp.lib;pthreadVCE2.lib;ProtocolMsgD.lib;libprotobuf-lite.lib;liblua.lib;libEGL.lib;libpbc.a;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

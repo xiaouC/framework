@@ -1,0 +1,23 @@
+package framework;
+option optimize_for = LITE_RUNTIME;
+// 客户端存放的文件列表格式
+enum FileStorage {
+    PACKAGE     =   1;  // 在包里
+    INTERNAL    =   2;  // 系统存储
+    EXTERNAL    =   3;  // 外部SD卡
+}
+message FileItem {
+    required string         url   = 1;
+    required string         md5   = 2;
+    required int32          size  = 3;
+    required FileStorage    where = 4;
+}
+message FileList {
+    required int32    version               = 1;
+    required string   version_name          = 2;
+    repeated FileItem files                 = 3;
+    optional int32    pkg_version           = 4;
+    optional string   platform              = 5;
+    optional int32    config_version        = 6;
+    repeated string   extend_data           = 7;
+}

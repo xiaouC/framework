@@ -1,0 +1,28 @@
+PODS:
+  - assets (1.00003)
+  - OpenUDID (HEAD based on 1.0.0)
+  - OPGameSDK (3.0.3)
+  - SBJson (3.2)
+  - UMengAnalytics (2.2.1)
+
+DEPENDENCIES:
+  - assets (from `assets`)
+  - OpenUDID (HEAD)
+  - OPGameSDK (from `OPGameSDK`)
+  - SBJson (~> 3.2)
+  - UMengAnalytics (~> 2.2.1)
+
+EXTERNAL SOURCES:
+  assets:
+    :path: assets
+  OPGameSDK:
+    :path: OPGameSDK
+
+SPEC CHECKSUMS:
+  assets: 2bc963e22b83635ec28825e48f34bc444eb075f0
+  OpenUDID: 04a7c560c47869bc5194820e3b529d4504cc0296
+  OPGameSDK: 69b58a726b1edd8cf24089496a878638534e24a4
+  SBJson: 0eeb4062451ec5ed792ff8b6615daff2ae39e218
+  UMengAnalytics: ce494e736260640957348d00eb0f41aa02167662
+
+COCOAPODS: 0.32.1

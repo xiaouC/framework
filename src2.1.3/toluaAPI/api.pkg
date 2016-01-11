@@ -1,0 +1,27 @@
+$#include "tolua_fix.h"
+$#include "CCLuaValue.h"
+$#include "TLRunningScene.h"
+
+class TLRunningScene : public CCScene
+{
+	static TLRunningScene* create();
+};
+
+$pfile "TLCommon.pkg"
+$pfile "MC.pkg"
+$pfile "RichText.pkg"
+$pfile "NetMessage.pkg"
+$pfile "SimpleAudioEngine.pkg"
+$pfile "TLMaskLayer.pkg"
+$pfile "TLWindow.pkg"
+$pfile "sdk.pkg"
+$pfile "platform.pkg"
+$pfile "TLModel.pkg"
+$pfile "Particle.pkg"
+$pfile "TLTweenManager.pkg"
+$pfile "CCActionExtend.pkg"
+$pfile "SDKLoginUtilsForAndroid.pkg"
+$pfile "TLEditBox.pkg"
+$pfile "TLRenderNode.pkg"
+
+

@@ -1,0 +1,57 @@
+
+enum {
+    kCCVertexAttrib_Position,
+    kCCVertexAttrib_Color,
+    kCCVertexAttrib_TexCoords,
+    kCCVertexAttrib_Color_2,
+
+    kCCVertexAttrib_MAX,
+};
+
+enum {
+	kCCUniformPMatrix,
+	kCCUniformMVMatrix,
+	kCCUniformMVPMatrix,
+	kCCUniformTime,
+	kCCUniformSinTime,
+	kCCUniformCosTime,
+	kCCUniformRandom01,
+	kCCUniformSampler,
+	kCCUniformCustom,
+    
+	kCCUniform_MAX,
+};
+
+class CCGLProgram : public CCObject
+{
+	static CCGLProgram* create();
+
+	bool initWithVertexShaderByteArray( const char* vShaderByteArray, const char* fShaderByteArray );
+	bool initWithVertexShaderFilename( const char* vShaderFilename, const char* fShaderFilename );
+	void addAttribute( const char* attributeName, unsigned int index );
+	bool link();
+	void updateUniforms();
+
+	void setUniformLocationWith1i( unsigned int location, unsigned int i1 );
+	void setUniformLocationWith2i( unsigned int location, unsigned int i1, unsigned int i2 );
+	void setUniformLocationWith3i( unsigned int location, unsigned int i1, unsigned int i2, unsigned int i3 );
+	void setUniformLocationWith4i( unsigned int location, unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4 );
+	void setUniformLocationWith1f( unsigned int location, float f1 );
+	void setUniformLocationWith2f( unsigned int location, float f1, float f2 );
+	void setUniformLocationWith3f( unsigned int location, float f1, float f2, float f3 );
+	void setUniformLocationWith4f( unsigned int location, float f1, float f2, float f3, float f4 );
+
+	void setCustomUniforms( float r, float g, float b, float a );
+	void setCustomUniformsEx( float r, float g, float b, float a );
+
+    void reset();
+};
+
+class CCShaderCache : public CCObject 
+{
+	static CCShaderCache* sharedShaderCache();
+	static void purgeSharedShaderCache();
+
+	CCGLProgram * programForKey( const char* key );
+	void addProgram( CCGLProgram* program, const char* key );
+};

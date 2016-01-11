@@ -1,0 +1,31 @@
+$#include "Common/TLModel.h"
+$using namespace cocos2d;
+
+class TLModel : public CCSpriteBatchNode
+{
+public:    
+	CCRect mcBoundingBox;
+
+    static TLModel* createWithName( const char *mcName, bool bAsync = false, float uvScale = 1 );
+
+    void play( int startFrame, int durationFrame, int loopCount = 0, bool reverse = false );
+    void start();
+    void stop();
+	bool getIsPlaying() const;
+    void setAutoClear( bool reset );
+    bool getAutoClear();
+    void setFrameRate( int rate );
+    int  getFrameRate();
+    const framework::Symbol* getSymbolInfo();
+    bool RegisterPlayEndCallbackHandler( LUA_FUNCTION nLuaHandler );
+    void RegisterPreCallScript(LUA_FUNCTION nLuaHandle);
+    void getLayerFirstNodePosition(const char *szName, float *x = 0, float *y = 0);
+    float getTimeLength( int nFrameRate = -1 );
+	void setColor(const ccColor3B& color);
+	const ccColor3B& getColor(void);
+	void setOpacity(unsigned char opacity);
+	GLubyte getOpacity();
+    const std::string getTextureName();
+    void setFrameColor(const ccColor4B& color);	// 每帧都会变化的 颜色值
+	void clearFrameColor();
+};

@@ -1,0 +1,63 @@
+$#include "MoveObject/TLMoveObject.h"
+$using namespace cocos2d;
+
+class TLMoveObject : public CCObject
+{
+public:
+    static float ms_fNameOffsetY;
+    static float ms_fIconOffsetY;
+
+	static TLMoveObject* newTLMoveObject( CCLayer* pLayer, CCSpriteBatchNode* pkShadowBatchNode );
+	static void releaseTLMoveObject( TLMoveObject* pkMoveObject );
+
+	void MoveToByTime( const CCPoint& destPos, float fTime, LUA_FUNCTION nMoveEndLuaHandle, LUA_FUNCTION nUpdateLuaHandle );
+	void StopMoving();
+
+	void SetDir( const CCPoint& destPos );
+	
+	void DoDeath();
+
+	void PlayAction( int nActionType, int nLoopCount, int nUserData = -1 );
+	void PlayAnimationFromMoveObject(TLMoveObject* pFrom, int nAnimationType, float fTime, LUA_FUNCTION nEndLuaHandle, LUA_FUNCTION nUpdateLuaHandle);	
+	void ActionFreeze();
+	
+	CCRect GetCollideRect();
+	
+	CCNode* GetObjectNode();
+    CCSprite* GetShadowSprite();
+
+	void SetIsVisible( bool bIsVisible );
+	bool GetIsVisible();
+	
+	void SetPosition( const CCPoint& pos );
+	CCPoint GetPosition();
+
+	void SetMoveObjectScaleX( float fScaleX );
+	void SetMoveObjectScaleY( float fScaleY );
+
+	void SetResID( int nResID );
+	int GetResID();
+	
+	void SetName( const std::string& strName );
+	std::string GetName() { return m_strName; }
+
+	void SetHeadIcon( int nIconID );
+	
+	MovieClip* LoadAction( int nAction );
+
+	void SetDefaultAction( int nDefaultAction );
+	int GetDefaultAction();
+
+	void SetMoveSpeed( float fMoveSpeed );
+	float GetMoveSpeed();
+	
+	void SetMCScaleX( float fScaleX );
+	float GetMCScaleX();
+
+	void SetMCScaleY( float fScaleY );
+	float GetMCScaleY();
+	
+	float GetActionLightTime(int nActionType);
+	float GetActionLightOffsetX(int nActionType);
+	float GetActionLightOffsetY(int nActionType);
+};
